@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>회원가입</title>
+    <style>
+        .error {
+            color: red;
+            font-size: 0.9em;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+        }
+        .error-border {
+            border: 1px solid red;
+        }
+    </style>
+</head>
+<body>
+<h1>회원가입</h1>
+<form th:action="@{/users}" th:object="${signupForm}" method="post"
+      onsubmit="return validateForm()">
+    <div class="form-group">
+        <label for="name">이름</label>
+        <input type="text"
+               id="name"
+               th:field="*{name}"
+               placeholder="이름 입력"
+               th:classappend="${#fields.hasErrors('name')} ? 'error-border' : ''" />
+        <div th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="birthDate">생년월일</label>
+        <input type="date"
+               id="birthDate"
+               th:field="*{birthDate}"
+               th:classappend="${#fields.hasErrors('birthDate')} ? 'error-border' : ''" />
+        <div th:if="${#fields.hasErrors('birthDate')}" th:errors="*{birthDate}" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="gender">성별</label>
+        <select id="gender"
+                th:field="*{gender}"
+                th:classappend="${#fields.hasErrors('gender')} ? 'error-border' : ''">
+            <option value="" selected>선택</option>
+            <option th:value="MALE">남성</option>
+            <option th:value="FEMALE">여성</option>
+        </select>
+        <div th:if="${#fields.hasErrors('gender')}" th:errors="*{gender}" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="username">아이디</label>
+        <div style="display: flex; align-items: center;">
+            <input type="text"
+                   id="username"
+                   th:field="*{username}"
+                   placeholder="아이디 입력"
+                   th:classappend="${#fields.hasErrors('username')} ? 'error-border' : ''"
+                   oninput="resetUsernameCheck()" />
+            <!-- ↑ oninput: 아이디를 수정하면 중복확인 상태를 false로 되돌리기 -->
+
+            <button type="button" onclick="checkUsername()" style="margin-left: 8px;">
+                중복 확인
+            </button>
+        </div>
+
+        <!-- 에러 표시 -->
+        <div th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="error"></div>
+    </div>
+
+    <!-- 아이디 중복 확인 완료 여부를 저장할 hidden 필드 -->
+    <input type="hidden" id="usernameChecked" value="false" />
+
+    <script>
+        async function checkUsername() {
+            const usernameInput = document.getElementById("username");
+            const usernameValue = usernameInput.value.trim();
+            const usernameChecked = document.getElementById("usernameChecked");
+
+            if (!usernameValue) {
+                alert("아이디를 입력해주세요.");
+                return;
+            }
+
+            try {
+                const response = await fetch(`/users/check-username?username=${encodeURIComponent(usernameValue)}`);
+
+                if (!response.ok) {
+                    const error = await response.json();
+                    alert(error.error);
+                    usernameChecked.value = "false";
+                    return;
+                }
+
+                const result = await response.json();
+                alert(result.message);
+                usernameChecked.value = "true";
+
+            } catch (err) {
+                alert("서버와 통신에 실패했습니다.");
+                usernameChecked.value = "false";
+            }
+        }
+
+        function resetUsernameCheck() {
+            document.getElementById("usernameChecked").value = "false";
+        }
+    </script>
+
+    <!--
+  기존의 5가지 질문 문자열들을 상수로 지정한 뒤,
+  "만약 securityQuestion이 이 중 하나면, 그걸 SELECT로 선택,
+   아니면 CUSTOM으로 간주" 로직을 쓸 수 있음
+-->
+    <th:block th:with="q1='가장 좋아했던 동화책의 제목은 무엇입니까?',
+                   q2='부모님이 처음 만난 도시는 어디입니까?',
+                   q3='처음으로 가보았던 해변의 이름은 무엇입니까?',
+                   q4='반려동물의 이름은 무엇입니까?',
+                   q5='졸업한 초등학교의 이름은 무엇입니까?'">
+
+        <div class="form-group">
+            <label for="securityQuestionSelect">보안 질문</label>
+
+            <!-- (1) SELECT 박스 -->
+            <select id="securityQuestionSelect"
+                    onchange="handleSecurityQuestionChange()"
+                    th:classappend="${#fields.hasErrors('securityQuestion')} ? 'error-border' : ''">
+                <option value="">-- 보안 질문 선택 --</option>
+                <option th:value="${q1}"
+                        th:selected="${signupForm.securityQuestion == q1}"
+                        th:text="${q1}"></option>
+                <option th:value="${q2}"
+                        th:selected="${signupForm.securityQuestion == q2}"
+                        th:text="${q2}"></option>
+                <option th:value="${q3}"
+                        th:selected="${signupForm.securityQuestion == q3}"
+                        th:text="${q3}"></option>
+                <option th:value="${q4}"
+                        th:selected="${signupForm.securityQuestion == q4}"
+                        th:text="${q4}"></option>
+                <option th:value="${q5}"
+                        th:selected="${signupForm.securityQuestion == q5}"
+                        th:text="${q5}"></option>
+                <option value="CUSTOM"
+                        th:selected="${#lists.contains({q1,q2,q3,q4,q5}, signupForm.securityQuestion) == false
+                                  and signupForm.securityQuestion != null
+                                  and signupForm.securityQuestion != ''}"
+                th:text="'자유 입력'">
+                </option>
+            </select>
+
+            <!-- (2) 자유 입력 text -->
+            <input type="text"
+                   id="securityQuestionCustom"
+                   placeholder="보안 질문 직접 입력"
+                   th:value="${#lists.contains({q1,q2,q3,q4,q5}, signupForm.securityQuestion) == false
+                          ? signupForm.securityQuestion : ''}"
+                   style="display: none;" />
+
+            <!-- (3) 실제 전송될 필드 -->
+            <input type="hidden"
+                   th:field="*{securityQuestion}"
+                   id="securityQuestionHidden" />
+
+            <!-- 에러 표시 -->
+            <div th:if="${#fields.hasErrors('securityQuestion')}"
+                 th:errors="*{securityQuestion}"
+                 class="error"></div>
+        </div>
+    </th:block>
+
+    <script>
+        function handleSecurityQuestionChange() {
+            const selectEl = document.getElementById("securityQuestionSelect");
+            const customEl = document.getElementById("securityQuestionCustom");
+            const hiddenEl = document.getElementById("securityQuestionHidden");
+
+            const selectedValue = selectEl.value;
+
+            if (selectedValue === "CUSTOM") {
+                // 자유 입력창 표시
+                customEl.style.display = "inline-block";
+                // hiddenEl.value = "";
+            } else {
+                // 자유 입력창 숨기고, 값 비우기
+                customEl.style.display = "none";
+                customEl.value = "";
+                hiddenEl.value = selectedValue;
+            }
+        }
+
+        // 사용자 typing 시 hidden 갱신
+        document.getElementById("securityQuestionCustom").addEventListener('input', function(){
+            const hiddenEl = document.getElementById("securityQuestionHidden");
+            hiddenEl.value = this.value;
+        });
+
+        // (4) 페이지 로드 시, 이미 "CUSTOM" 상태인지 확인 → 화면에 반영
+        window.addEventListener('DOMContentLoaded', function() {
+            const selectEl = document.getElementById("securityQuestionSelect");
+            const customEl = document.getElementById("securityQuestionCustom");
+            const hiddenEl = document.getElementById("securityQuestionHidden");
+
+            if (selectEl.value === "CUSTOM") {
+                // 자유 입력 상태였다면
+                customEl.style.display = "inline-block";
+                // hiddenEl.value는 이미 th:value 세팅됨
+            } else {
+                customEl.style.display = "none";
+            }
+        });
+    </script>
+
+    <div class="form-group">
+        <label for="securityAnswer">보안 질문 답변</label>
+        <input type="text"
+               id="securityAnswer"
+               th:field="*{securityAnswer}"
+               placeholder="보안 질문 답변 입력"
+               th:classappend="${#fields.hasErrors('securityAnswer')} ? 'error-border' : ''" />
+        <div th:if="${#fields.hasErrors('securityAnswer')}" th:errors="*{securityAnswer}" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="password">비밀번호</label>
+        <input type="password"
+               id="password"
+               th:field="*{password}"
+               placeholder="비밀번호 입력"
+               th:classappend="${#fields.hasErrors('password')} ? 'error-border' : ''" />
+        <div th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error"></div>
+    </div>
+
+    <div class="form-group">
+        <label for="passwordConfirm">비밀번호 확인</label>
+        <input type="password"
+               id="passwordConfirm"
+               th:field="*{passwordConfirm}"
+               placeholder="비밀번호 확인 입력"
+               th:classappend="${#fields.hasErrors('passwordConfirm')} ? 'error-border' : ''" />
+        <div th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="error"></div>
+    </div>
+
+    <button type="submit">회원가입</button>
+    <button class="w-100 btn btn-secondary btn-lg"
+            th:onclick="|location.href='@{/}'|"
+            type="button">취소
+    </button>
+</form>
+
+<script>
+    function validateForm() {
+        const usernameChecked = document.getElementById("usernameChecked").value;
+        if (usernameChecked !== "true") {
+            alert("아이디 중복 확인을 해주세요.");
+            return false;
+        }
+        return true;
+    }
+</script>
+</body>
+</html>
