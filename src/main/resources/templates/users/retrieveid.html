@@ -4,39 +4,211 @@
     <meta charset="UTF-8">
     <title>아이디 찾기</title>
     <style>
-        .form-group { margin-bottom: 15px; }
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
         .field-error {
             border-color: #dc3545;
             color: #dc3545;
+            font-size: 14px;
+            margin-top: 5px;
+            display: block;
         }
+
+        /* ✅ 전체 페이지 중앙 정렬 및 배경색 */
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #F8F9FA;
+        }
+
+        /* ✅ 컨테이너 스타일 */
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        /* ✅ 제목 스타일 */
+        .title {
+            font-size: 26px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #333;
+        }
+
+        /* ✅ 입력 필드와 선택 필드 크기 통일 */
+        input, select {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #F8F9FA;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        /* ✅ Placeholder 스타일 */
+        input::placeholder {
+            color: #7A828A;
+            text-align: left;
+        }
+
+        /* ✅ 생년월일 선택 박스 크기 통일 */
+        .birthdate-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .birthdate-container select {
+            width: 32%;
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            background-color: #F8F9FA;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+            box-sizing: border-box;
+        }
+
+        /* ✅ 버튼 스타일 */
+        .btn {
+            width: 100%;
+            padding: 14px;
+            box-sizing: border-box;
+            font-size: 18px;
+            border-radius: 25px;
+            border: none;
+            color: white;
+            cursor: pointer;
+            margin-top: 20px;
+            font-weight: bold;
+            background-color: #505D96;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .btn:hover {
+            background-color: #3F4D7C;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
     </style>
 </head>
 <body>
-<h1>아이디 찾기</h1>
-<form th:action="@{/users/retrieve/id}" th:object="${findForm}" method="post">
-    <div th:if="${#fields.hasGlobalErrors()}">
-        <p class="field-error" th:each="err : ${#fields.globalErrors()}"
-           th:text="${err}">전체 오류 메시지</p>
-    </div>
-    <div class="form-group">
-        <label for="name">이름</label>
-        <input type="text" id="name" name="name" placeholder="이름 입력" th:value="${findForm.name}" required/>
-    </div>
+<div class="container">
+    <!-- ✅ 아이디 찾기 제목 & 설명 -->
+    <div class="title">아이디 찾기</div>
 
-    <div class="form-group">
-        <label for="birthDate">생년월일</label>
-        <input type="date" id="birthDate" name="birthDate" th:value="${findForm.birthDate}" required/>
-    </div>
+    <!-- ✅ 아이디 찾기 폼 -->
+    <form th:action="@{/users/retrieve/id}" th:object="${findForm}" method="post">
+        <!-- ✅ 전체 오류 메시지 (오류 발생 시에만 표시) -->
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}" th:text="${err}"></p>
+        </div>
 
-    <div class="form-group">
-        <label for="gender">성별</label>
-        <select id="gender" name="gender" required>
-            <option value="" selected>선택</option>
-            <option value="MALE" th:selected="${findForm.gender == 'MALE'}">남성</option>
-            <option value="FEMALE" th:selected="${findForm.gender == 'FEMALE'}">여성</option>
-        </select>
-    </div>
-    <button type="submit">아이디 찾기</button>
-</form>
+        <div class="form-group">
+            <label for="name">이름</label>
+            <input type="text" id="name" name="name" placeholder="이름 입력" th:field="*{name}" required/>
+            <p class="field-error" th:errors="*{name}"></p>
+        </div>
+
+        <div class="form-group">
+            <label>생년월일</label>
+            <div class="birthdate-container">
+                <select id="year" name="year" required>
+                    <option value="" selected>연도</option>
+                </select>
+                <select id="month" name="month" required>
+                    <option value="" selected>월</option>
+                </select>
+                <select id="day" name="day" required>
+                    <option value="" selected>일</option>
+                </select>
+            </div>
+            <!-- ✅ 불필요한 생년월일 에러 메시지 제거 -->
+        </div>
+
+        <div class="form-group">
+            <label for="gender">성별</label>
+            <select id="gender" name="gender" required>
+                <option value="" selected>선택</option>
+                <option value="MALE">남성</option>
+                <option value="FEMALE">여성</option>
+            </select>
+            <p class="field-error" th:errors="*{gender}"></p>
+        </div>
+
+        <button class="btn" type="submit">아이디 찾기</button>
+    </form>
+</div>
+
+<script>
+    /* ✅ 자동으로 연/월/일 옵션 채우기 */
+    document.addEventListener("DOMContentLoaded", function () {
+        const yearSelect = document.getElementById("year");
+        const monthSelect = document.getElementById("month");
+        const daySelect = document.getElementById("day");
+
+        // 현재 연도 가져오기
+        const currentYear = new Date().getFullYear();
+
+        // 연도 옵션 (현재 연도 - 70년 전부터 시작)
+        for (let y = currentYear - 70; y <= currentYear; y++) {
+            let option = new Option(y, y);
+            yearSelect.add(option);
+        }
+
+        // 월 옵션 (1~12월)
+        for (let m = 1; m <= 12; m++) {
+            let option = new Option(m, m);
+            monthSelect.add(option);
+        }
+
+        // 윤년 계산 함수
+        function isLeapYear(year) {
+            return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
+        }
+
+        // 일 옵션 업데이트
+        function updateDays() {
+            const year = parseInt(yearSelect.value);
+            const month = parseInt(monthSelect.value);
+            let daysInMonth = new Date(year, month, 0).getDate();
+
+            // 윤년 적용 (2월 29일)
+            if (month === 2 && isLeapYear(year)) {
+                daysInMonth = 29;
+            }
+
+            // 기존 옵션 초기화 후 새로 추가
+            daySelect.innerHTML = "<option value='' selected>일</option>";
+            for (let d = 1; d <= daysInMonth; d++) {
+                let option = new Option(d, d);
+                daySelect.add(option);
+            }
+        }
+
+        // 연도, 월 변경 시 일 업데이트
+        yearSelect.addEventListener("change", updateDays);
+        monthSelect.addEventListener("change", updateDays);
+
+        // 기본적으로 1~31일까지 표시
+        updateDays();
+    });
+</script>
 </body>
 </html>
