@@ -6,32 +6,31 @@
     <title>회원가입</title>
     <style>
         /* 전체 페이지에서 스크롤바 숨기기 */
-body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    background-color: #FFFFFF;
-    padding: 60px;
-    min-height: 100vh;
-    overflow-y: auto; /* 스크롤 가능하게 설정 */
-}
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            background-color: #FFFFFF;
+            padding: 60px;
+            min-height: 100vh;
+            overflow-y: auto; /* 스크롤 가능하게 설정 */
+        }
 
-/* 스크롤바 숨기기 (Chrome, Safari) */
-.container::-webkit-scrollbar {
-    display: none;
-}
+        /* 스크롤바 숨기기 (Chrome, Safari) */
+        .container::-webkit-scrollbar {
+            display: none;
+        }
 
-/* 스크롤바 숨기기 (Firefox) */
-.container {
-    scrollbar-width: none;
-}
+        /* 스크롤바 숨기기 (Firefox) */
+        .container {
+            scrollbar-width: none;
+        }
 
-/* 스크롤바 숨기기 (IE, Edge) */
-.container {
-    -ms-overflow-style: none;
-}
-
+        /* 스크롤바 숨기기 (IE, Edge) */
+        .container {
+            -ms-overflow-style: none;
+        }
 
         h1 {
             text-align: center;
@@ -145,7 +144,7 @@ body {
         <div class="form-group">
             <label for="username">아이디</label>
             <div class="input-with-button">
-                <input type="text" id="username" name="username" placeholder="10자 이내">
+                <input type="text" id="username" name="username" placeholder="아이디 입력 (10자 이내)">
                 <button type="button" id="check-username-btn" class="btn-check">중복 확인</button>
             </div>
             <p id="username-error" class="error-message"></p>
@@ -230,7 +229,6 @@ body {
                 </div>
         </div>
         <button type="submit" class="submit-btn">가입하기</button>
-</div>
     </form>
 </div>
 
