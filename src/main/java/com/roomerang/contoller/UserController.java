@@ -109,7 +109,7 @@ public class UserController {
         }
     }
 
-    @PostMapping
+    @PostMapping("/signup")
     public String signupUser(@Validated @ModelAttribute("signupForm") UserCreateRequest userCreateRequest,
                              BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 

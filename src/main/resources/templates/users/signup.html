@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -141,12 +141,12 @@ body {
 <body>
 <div class="container">
     <h1>회원가입</h1>
-    <form>
+    <form th:action="@{/users/signup}" th:object="${signupForm}" method="post" onsubmit="return validateSignupForm()">
         <div class="form-group">
             <label for="username">아이디</label>
             <div class="input-with-button">
-                <input type="text" id="username" placeholder="10자 이내">
-                <button type="button" class="btn-check" onclick="checkUsername()">중복 확인</button>
+                <input type="text" id="username" name="username" placeholder="10자 이내">
+                <button type="button" id="check-username-btn" class="btn-check">중복 확인</button>
             </div>
             <p id="username-error" class="error-message"></p>
         </div>
@@ -154,50 +154,54 @@ body {
         <div class="form-group">
             <label for="password">비밀번호</label>
             <div class="input-field">
-                <input type="password" id="password" placeholder="비밀번호 입력">
+                <input type="password" id="password" name="password" placeholder="비밀번호 입력">
             </div>
         </div>
 
         <div class="form-group">
             <label for="password-confirm">비밀번호 확인</label>
             <div class="input-field">
-                <input type="password" id="password-confirm" placeholder="비밀번호 재입력">
+                <input type="password" id="password-confirm" name="passwordConfirm" placeholder="비밀번호 재입력">
             </div>
         </div>
 
         <div class="form-group">
             <label for="name">이름</label>
             <div class="input-field">
-                <input type="text" id="name" placeholder="이름 입력">
+                <input type="text" id="name" name="name" placeholder="이름 입력">
             </div>
         </div>
 
         <div class="form-group">
             <label for="year">생년월일</label>
             <div class="birth-group">
-                <select id="year">
+                <select id="year" name="year" onchange="updateBirthDate()">
                     <option value="" selected disabled>출생년도</option>
                 </select>
-                <select id="month">
+                <select id="month" name="month" onchange="updateBirthDate()">
                     <option value="" selected disabled>월</option>
                 </select>
-                <select id="day">
+                <select id="day" name="day" onchange="updateBirthDate()">
                     <option value="" selected disabled>일</option>
                 </select>
             </div>
-
-
-            <div class="form-group">
-            <label>성별</label>
-            <div class="gender-group">
-                <button type="button" onclick="selectGender(this)">남자</button>
-                <button type="button" onclick="selectGender(this)">여자</button>
-            </div>
+            <input type="hidden" id="birthDate" name="birthDate">
         </div>
 
+
         <div class="form-group">
+                <label>성별</label>
+                <div class="gender-group">
+                    <button type="button" onclick="selectGender(this)" data-value="MALE">남자</button>
+                    <button type="button" onclick="selectGender(this)" data-value="FEMALE">여자</button>
+                </div>
+                <!-- 선택된 성별을 저장할 hidden input -->
+                <input type="hidden" id="selected-gender" name="gender">
+            </div>
+
+            <div class="form-group">
             <label for="security-question">보안 질문</label>
-            <select id="security-question" class="input-field">
+                <select id="security-question" class="input-field" name="securityQuestion">
                 <option value="">보안 질문을 선택하세요</option>
                 <option value="q1">가장 좋아했던 동화책의 제목은 무엇입니까?</option>
                 <option value="q2">부모님이 처음 만난 도시는 어디입니까?</option>
@@ -209,32 +213,54 @@ body {
         <div class="form-group">
             <label for="security-answer">보안 질문 답변</label>
             <div class="input-field">
-                <input type="text" id="security-answer" placeholder="보안 질문 답변 입력">
+                <input type="text" id="security-answer" name="securityAnswer" placeholder="보안 질문 답변 입력">
             </div>
         </div>
             <div class="form-group">
                 <label for="phone">전화번호</label>
                 <div class="input-field">
-                    <input type="text" id="phone" placeholder="전화번호 입력">
+                    <input type="text" id="phone" name="phone" placeholder="전화번호 입력">
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="email">이메일 주소</label>
                 <div class="input-field">
-                    <input type="email" id="email" placeholder="이메일 입력">
+                    <input type="email" id="email" name="email" placeholder="이메일 입력">
                 </div>
         </div>
-        <button type="submit" class="submit-btn">확인</button>
+        <button type="submit" class="submit-btn">가입하기</button>
 </div>
     </form>
 </div>
 
 <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        populateBirthDateOptions();
+        const usernameCheckBtn = document.getElementById("check-username-btn");
+        if (usernameCheckBtn) {
+            usernameCheckBtn.addEventListener("click", function () {
+                console.log("✅ 중복 확인 버튼 클릭됨!");
+                checkUsername();
+            });
+        }
+
+        document.querySelector("form").addEventListener("submit", validateSignupForm);
+
+        const genderButtons = document.querySelectorAll(".gender-btn");
+        genderButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                selectGender(this);
+            });
+        });
+    });
+
     function checkUsername() {
         const username = document.getElementById("username").value.trim();
         const errorMsg = document.getElementById("username-error");
         const takenUsernames = ["user1", "admin", "test123", "example"];
+
+        console.log("입력된 아이디:", username);
 
         if (!username) {
             errorMsg.textContent = "아이디를 입력해주세요.";
@@ -246,32 +272,60 @@ body {
             errorMsg.textContent = "사용 가능한 아이디입니다.";
             errorMsg.className = "error-message success";
         }
+
+        errorMsg.style.display = "block";
     }
 
-    document.querySelector("form").addEventListener("submit", function (e) {
+    // ✅ 성별 선택 기능
+    function selectGender(button) {
+    document.querySelectorAll(".gender-group button").forEach(btn => btn.classList.remove("active"));
+    button.classList.add("active");
+
+    document.getElementById("selected-gender").value = button.dataset.value;
+    }
+
+    function validateSignupForm() {
         const password = document.getElementById("password").value;
         const confirmPassword = document.getElementById("password-confirm").value;
         const securityQuestion = document.getElementById("security-question").value;
         const securityAnswer = document.getElementById("security-answer").value.trim();
+        const birthDate = document.getElementById("birthDate").value;
+        const gender = document.getElementById("selected-gender").value;
+
+        if (!password || !confirmPassword) {
+        alert("비밀번호를 입력해주세요.");
+        return false;
+        }
 
         if (password !== confirmPassword) {
             alert("비밀번호가 일치하지 않습니다.");
-            e.preventDefault();
+            return false;
         }
-        if (!securityQuestion || !securityAnswer) {
-            alert("보안 질문과 답변을 입력하세요.");
-            e.preventDefault();
-        }
-    });
 
-    function selectGender(button) {
-        document.querySelectorAll('.gender-group button').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+        if (!securityQuestion) {
+            alert("보안 질문을 선택해주세요.");
+            return false;
+        }
+
+        if (!securityAnswer) {
+            alert("보안 질문 답변을 입력해주세요.");
+            return false;
+        }
+
+        if (!birthDate) {
+            alert("생년월일을 입력해주세요.");
+            return false;
+        }
+
+        if (!gender) {
+            alert("성별을 선택해주세요.");
+            return false;
+        }
+
+        return true;
     }
-</script>
 
-<script>
-    // 생년월일 옵션 추가하는 함수
+    function populateBirthDateOptions() {
     const yearSelect = document.getElementById("year");
     const monthSelect = document.getElementById("month");
     const daySelect = document.getElementById("day");
@@ -292,26 +346,45 @@ body {
         monthSelect.appendChild(option);
     }
 
-    // 일 추가 함수 (해당 월에 맞게 자동 변경)
-    function updateDays() {
-        const month = monthSelect.value;
-        const year = yearSelect.value;
-        const daysInMonth = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날 계산
+    // 일 추가 (기본 31일)
+    updateDays();
 
-        // 기존 옵션을 삭제하지 않고 기본값 유지
-        daySelect.innerHTML = '<option value="" selected disabled>일</option>';
-
-        for (let i = 1; i <= daysInMonth; i++) {
-            const option = document.createElement("option");
-            option.value = i;
-            option.textContent = i;
-            daySelect.appendChild(option);
-        }
-    }
-
-    // 월, 연도 변경 시 일 업데이트
+    // 월과 연도 변경 시 일 업데이트
     monthSelect.addEventListener("change", updateDays);
     yearSelect.addEventListener("change", updateDays);
+}
+
+function updateDays() {
+    const daySelect = document.getElementById("day");
+    const month = document.getElementById("month").value;
+    const year = document.getElementById("year").value;
+
+    if (!month || !year) return;
+
+    const daysInMonth = new Date(year, month, 0).getDate(); // 해당 월의 마지막 날 계산
+
+    // 기존 옵션을 삭제하지 않고 기본값 유지
+    daySelect.innerHTML = '<option value="" selected disabled>일</option>';
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        daySelect.appendChild(option);
+    }
+}
+
+// ✅ 생년월일이 변경될 때 자동으로 `birthDate` 필드 업데이트
+function updateBirthDate() {
+    const year = document.getElementById("year").value;
+    const month = document.getElementById("month").value;
+    const day = document.getElementById("day").value;
+
+    if (year && month && day) {
+        document.getElementById("birthDate").value = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        console.log("✅ 생년월일 설정 완료:", document.getElementById("birthDate").value);
+    }
+}
 </script>
 </body>
 </html>
