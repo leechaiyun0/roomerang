@@ -143,7 +143,7 @@
             </div>
         </div>
         <div class="form-group">
-            <label for="birth-date">생년월일</label>
+            <label for="year">생년월일</label>
             <div class="birth-group">
                 <select id="year">출생년도</select>
                 <select id="month">월</select>
@@ -229,6 +229,27 @@
             <div class="input-field">
                 <input type="email" id="email" placeholder="이메일 입력">
             </div>
+
+            <div class="form-group">
+                <label for="security-question">보안 질문</label>
+                <div class="input-field">
+                    <select id="security-question">
+                        <option value="">보안 질문을 선택하세요</option>
+                        <option value="q1">가장 좋아했던 동화책의 제목은 무엇입니까?</option>
+                        <option value="q2">부모님이 처음 만난 도시는 어디입니까?</option>
+                        <option value="q3">처음으로 가보았던 해변의 이름은 무엇입니까?</option>
+                        <option value="q4">반려동물의 이름은 무엇입니까?</option>
+                        <option value="q5">졸업한 초등학교의 이름은 무엇입니까?</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="security-answer">보안 질문 답변</label>
+                <div class="input-field">
+                    <input type="text" id="security-answer" placeholder="답변 입력">
+                </div>
+            </div>
+
         </div>
         <button type="submit" class="submit-btn">확인</button>
     </form>
