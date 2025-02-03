@@ -2,148 +2,45 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>아이디 찾기 결과</title>
     <style>
-        /* ✅ 전체 페이지 중앙 정렬 및 배경색 */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #F8F9FA;
-        }
-
-        /* ✅ 컨테이너 스타일 */
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
-        }
-
-        /* ✅ 제목 스타일 */
-        .title {
-            font-size: 26px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        /* ✅ 입력 필드 스타일 */
-        .form-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-
-        label {
-            font-weight: bold;
-            display: block;
-            margin-bottom: 8px;
-            color: #333;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            font-size: 16px;
-            border-radius: 8px;
-            border: 1px solid #ccc;
-            background-color: #F8F9FA;
-            transition: all 0.3s ease-in-out;
-        }
-
-        select:focus, input:focus {
-            border-color: #505D96;
-            box-shadow: 0 0 8px rgba(80, 93, 150, 0.2);
-            outline: none;
-        }
-
-        /* ✅ 버튼 스타일 */
-        .btn {
-            width: 100%;
-            padding: 14px;
-            font-size: 18px;
-            border-radius: 25px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            margin-top: 20px;
-            font-weight: bold;
-            background-color: #505D96;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn:hover {
-            background-color: #3F4D7C;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ✅ 에러 메시지 스타일 */
-        .error {
-            color: #dc3545;
-            font-size: 14px;
-            margin-top: 5px;
-            display: block;
-        }
-
-         /* ✅ 보안 질문 섹션 */
-        #securityQuestionDiv {
-            display: none;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #f1f3f5;
-        }
-
+        .form-group { margin-bottom: 15px; }
+        .error { color: red; }
     </style>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+<h1>아이디 찾기 결과</h1>
 
-<div class="container">
-    <div class="title">아이디 찾기 결과</div>
-
-    <!-- 아이디 선택 폼 -->
-    <form id="userIdForm" th:action="@{/users/retrieve/sequrity-question}" method="get" th:object="${findForm}">
-
-        <div class="form-group">
-            <label for="userId">아이디 선택</label>
-            <select id="userId" name="userId" required>
-                <option value="" selected>선택</option>
-                <th:block th:each="user : ${userFindResponses}">
-                    <option th:value="${user.userId}" th:text="${user.maskedUsername}"></option>
-                </th:block>
-            </select>
-        </div>
-
-        <button class="btn" type="submit">선택</button>
-    </form>
-
-    <!-- 보안 질문이 표시될 부분 -->
-    <div id="securityQuestionDiv" style="display:none;">
-
-        <h2>보안 질문</h2>
-        <p id="securityQuestionText"></p>
-        <form id="securityAnswerForm" method="post">
-
-            <div class="form-group">
-                <label for="securityAnswer">답변</label>
-                <input type="text" id="securityAnswer" name="securityAnswer" placeholder="답변 입력" required/>
-            </div>
-
-            <button class="btn" type="submit">답변 제출</button>
-        </form>
+<!-- 아이디 선택 폼 -->
+<form id="userIdForm" th:action="@{/users/retrieve/sequrity-question}" method="get" th:object="${findForm}">
+    <div class="form-group">
+        <label for="userId">아이디 선택</label>
+        <select id="userId" name="userId" required>
+            <option value="" selected>선택</option>
+            <th:block th:each="user : ${userFindResponses}">
+                <option th:value="${user.userId}" th:text="${user.maskedUsername}"></option>
+            </th:block>
+        </select>
     </div>
+    <button type="submit">선택</button>
+</form>
 
-    <!-- 오류 메시지 -->
-    <div id="errorMessage" class="error" style="display:none;"></div>
+<!-- 보안 질문이 표시될 부분 -->
+<div id="securityQuestionDiv" style="display:none;">
+    <h2>보안 질문</h2>
+    <p id="securityQuestionText"></p>
+    <form id="securityAnswerForm" method="post">
+        <div class="form-group">
+            <label for="securityAnswer">답변</label>
+            <input type="text" id="securityAnswer" name="securityAnswer" required/>
+        </div>
+        <button type="submit">답변 제출</button>
+    </form>
 </div>
+
+<!-- 오류 메시지 -->
+<div id="errorMessage" class="error" style="display:none;"></div>
 
 <script>
     // 사용자 아이디를 선택했을 때, 보안 질문을 요청하는 함수
@@ -181,7 +78,7 @@
         var action = 'FIND_ID'; // 예시로 action을 FIND_ID로 설정 (여기서는 사용자에 따라 action을 설정할 수 있음)
 
         if (securityAnswer && userId) {
-            //보안 질문 답변을 POST 요청으로 서버에 제출
+            // 보안 질문 답변을 POST 요청으로 서버에 제출
             $.post("/users/retrieve/security-answer", {
                 userId: userId,
                 securityAnswer: securityAnswer,

@@ -1,136 +1,54 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>로그인</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #F8F9FA;
-        }
-
         .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            width: 400px;
-            text-align: center;
+            max-width: 560px;
         }
-
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-        }
-
-        .logo {
-            width: 200px;
-        }
-
-        label {
-            display: block;
-            text-align: left;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            font-size: 16px;
-            border-radius: 5px;
-            border: 1px solid #ccc;
-            text-align: left;
-            margin-bottom: 15px;
-        }
-
-        input::placeholder {
-            color: #7A828A;
-            text-align: left;
-        }
-
-        /* ✅ 버튼 스타일 (둥글게 변경) */
-        .btn {
-            width: 100%;
-            padding: 12px;
-            box-sizing: border-box;
-            font-size: 16px;
-            border-radius: 25px;  /* 둥근 모서리 적용 */
-            border: none;
-            color: white;
-            cursor: pointer;
-            margin-top: 15px;
-            font-weight: bold;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-primary {
-            background-color: #505D96;
-        }
-
-        .btn-secondary {
-            background-color: #6c757d;
-        }
-
-        /* ✅ 버튼 hover 효과 */
-        .btn:hover {
-            opacity: 0.9;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .small-links {
-            margin-top: 20px;
-            font-size: 12px;
-            color: #777E90;
-        }
-
-        .big-links {
-            margin-top: 25px;
-            font-size: 14px;
-            color: #777E90;
-        }
-
-        .bold-text {
-            font-weight: bold;
+        .field-error {
+            border-color: #dc3545;
+            color: #dc3545;
         }
     </style>
+    <title>로그인</title>
 </head>
 <body>
 <div class="container">
-    <div class="logo-container">
-        <img src="/images/logo.png" alt="룸메랑 로고" class="logo">
+    <div class="py-5 text-center">
+        <h2>로그인</h2>
     </div>
-
     <form th:action="@{/users/login}" th:object="${loginForm}" method="post">
-        <div>
-            <label for="username">아이디</label>
-            <input type="text" id="username" th:field="*{username}" placeholder="아이디를 입력하세요" required>
+        <div th:if="${#fields.hasGlobalErrors()}">
+            <p class="field-error" th:each="err : ${#fields.globalErrors()}"
+               th:text="${err}">전체 오류 메시지</p>
         </div>
-
+        <div>
+            <label for="username">로그인 ID</label>
+            <input type="text" id="username" th:field="*{username}" class="formcontrol"
+                   th:errorclass="field-error">
+            <div class="field-error" th:errors="*{username}"></div>
+        </div>
         <div>
             <label for="password">비밀번호</label>
-            <input type="password" id="password" th:field="*{password}" placeholder="비밀번호를 입력하세요" required>
+            <input type="password" id="password" th:field="*{password}"
+                   class="form-control"
+                   th:errorclass="field-error">
+            <div class="field-error" th:errors="*{password}"></div>
         </div>
-
-        <button class="btn btn-primary" type="submit">로그인</button>
-        <button class="btn btn-secondary" type="button" onclick="location.href='/'">취소</button>
+        <hr class="my-4">
+        <div class="row">
+            <div class="col">
+                <button class="w-100 btn btn-primary btn-lg" type="submit">로그인
+                </button>
+            </div>
+            <div class="col">
+                <button class="w-100 btn btn-secondary btn-lg"
+                        th:onclick="|location.href='@{/}'|"
+                        type="button">취소</button>
+            </div>
+        </div>
     </form>
-
-    <div class="small-links">
-        <a href="/users/retrieve/id">아이디 찾기</a> | <a href="/users/retrieve/password">비밀번호 찾기</a>
-    </div>
-
-    <div class="big-links">
-        계정이 없으신가요? <a href="/users/signup" class="bold-text">회원가입</a>
-    </div>
-
-</div>
+</div> <!-- /container -->
 </body>
 </html>

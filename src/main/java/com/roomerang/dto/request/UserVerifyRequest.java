@@ -1,6 +1,5 @@
 package com.roomerang.dto.request;
 
-import com.roomerang.util.Action;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,7 +14,4 @@ public class UserVerifyRequest {
 
     @NotNull
     private String securityAnswer;
-
-    @NotNull
-    private Action actionType;
 }

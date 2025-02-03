@@ -13,8 +13,9 @@ public interface UserService {
     void validatePassword(String password, String confirmPassword, BindingResult bindingResult);
     boolean createUser(UserCreateRequest userCreateRequest, BindingResult bindingResult);
     User login(String username, String rawPassword);
-    List<UserFindResponse> getMaskedUsers(UserFindRequest userFindRequest);
-    boolean verifySequrityAnswer(UserVerifyRequest userVerifyRequest);
+    List<UserFindResponse> findMaskedUsersAndSecurityQuestion(UserFindRequest userFindRequest);
+    UserFindResponse validateUserForPasswordReset(UserFindRequest userFindRequest);
+    boolean verifySecurityAnswer(UserVerifyRequest userVerifyRequest);
     String revealUsername(Long userId);
     void resetPassword(Long userId, String newPassword);
 }

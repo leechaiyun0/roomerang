@@ -1,91 +1,11 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>회원가입 성공</title>
-    <style>
-        /* ✅ 전체 페이지 스타일 */
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #F8F9FA;
-            flex-direction: column;
-        }
-
-        /* ✅ 컨테이너 박스 */
-        .container {
-            background-color: #ffffff;
-            padding: 50px;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
-            text-align: center;
-            max-width: 600px;
-            width: 90%;
-            position: relative;
-        }
-
-        /* ✅ 제목 스타일 (가운데 정렬) */
-        .title {
-            font-size: 28px;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards 0.5s;
-        }
-
-        /* ✅ 설명 텍스트 (가운데 정렬) */
-        .message {
-            font-size: 18px;
-            color: #666;
-            margin-bottom: 25px;
-            text-align: center;
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards 1s;
-        }
-
-        /* ✅ 홈 버튼 */
-        .home-btn {
-            display: inline-block;
-            width: 150px; /* ✅ 버튼 크기 고정 */
-            padding: 10px;
-            font-size: 16px; /* ✅ 글씨 크기 줄임 */
-            border-radius: 25px;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-weight: bold;
-            background-color: #505D96;
-            transition: all 0.3s ease-in-out;
-            opacity: 0;
-            animation: fadeIn 1s ease-in-out forwards 1.5s;
-            text-decoration: none; /* ✅ 밑줄 제거 */
-        }
-
-        .home-btn:hover {
-            background-color: #3F4D7C;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        /* ✅ 애니메이션 효과 */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
 </head>
 <body>
-
-<div class="container">
-    <h1 class="title">🎉 회원가입 성공! 🎉</h1>
-    <p class="message">회원가입이 완료되었습니다. 환영합니다!</p>
-    <a href="/" class="home-btn">홈으로 이동</a>
-</div>
-
+<h1>회원가입이 성공적으로 완료되었습니다!</h1>
+<p th:text="'회원가입이 완료되었습니다.'"></p>
+<a href="/">홈으로</a>
 </body>
 </html>

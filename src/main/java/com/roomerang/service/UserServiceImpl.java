@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.roomerang.util.StringHelper.maskUsername;
 import static java.util.Collections.emptyList;
@@ -57,7 +58,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserFindResponse> getMaskedUsers(UserFindRequest userFindRequest) {
+    public List<UserFindResponse> findMaskedUsersAndSecurityQuestion(UserFindRequest userFindRequest) {
         List<User> foundUsers = userRepository.findAllByNameAndBirthDateAndGender(
                 userFindRequest.getName(),
                 userFindRequest.getBirthDate(),
@@ -70,20 +71,21 @@ public class UserServiceImpl implements UserService {
         return foundUsers.stream()
                 .map(user -> new UserFindResponse(
                         maskUsername(user.getUsername()),
-                        user.getId()))
+                        user.getId(),
+                        user.getSecurityQuestion()))
                 .toList();
     }
 
     @Override
-    public boolean verifySequrityAnswer(UserVerifyRequest verifyRequest) {
-        User savedUser = userRepository.findById(verifyRequest.getUserId())
+    public boolean verifySecurityAnswer(UserVerifyRequest verifyRequest) {
+        User user = userRepository.findById(verifyRequest.getUserId())
                 .orElse(null);
 
-        if (savedUser == null) {
+        if (user == null) {
             return false;
         }
 
-        return savedUser.getSecurityAnswer().equals(verifyRequest.getSecurityAnswer());
+        return user.getSecurityAnswer().equals(verifyRequest.getSecurityAnswer());
     }
 
     @Override
@@ -97,6 +99,32 @@ public class UserServiceImpl implements UserService {
 
         return user.getUsername();
     }
+
+    @Override
+    public UserFindResponse validateUserForPasswordReset(UserFindRequest request) {
+        Optional<User> foundUser = userRepository.findByUsername(request.getUsername());
+
+        // 해당 아이디로 조회되는 유저가 없거나, 이름, 생일, 성별이 일치하지 않으면 null 반환
+        if (foundUser.isEmpty()) {
+            return null;
+        }
+
+        // 사용자가 제출한 정보가 모두 일치하는 경우 true 반환
+        User user = foundUser.get();
+
+        boolean isExists = user.getName().equals(request.getName()) &&
+                user.getBirthDate().equals(request.getBirthDate()) &&
+                user.getGender().equals(request.getGender());
+
+        if(!isExists) {
+            return null;
+        }
+
+        return new UserFindResponse(
+                user.getId(),
+                user.getSecurityQuestion());
+    }
+
 
     @Override
     public void resetPassword(Long userId, String newPassword) {

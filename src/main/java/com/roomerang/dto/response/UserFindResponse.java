@@ -12,4 +12,12 @@ public class UserFindResponse {
 
     @NotNull
     private Long userId;
+
+    @NotNull
+    private String securityQuestion;
+
+    public UserFindResponse(Long userId, String securityQuestion) {
+        this.userId = userId;
+        this.securityQuestion = securityQuestion;
+    }
 }

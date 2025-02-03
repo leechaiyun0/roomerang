@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import com.roomerang.util.Action;
+
 import java.time.LocalDate;
 
 @Data
@@ -28,7 +28,4 @@ public class UserFindRequest {
 
     @NotNull
     private User.Gender gender;
-
-    @NotNull
-    private Action actionType;
 }
