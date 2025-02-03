@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>아이디 찾기 결과</title>
+    <style>
+        .form-group { margin-bottom: 15px; }
+        .error { color: red; }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<h1>아이디 찾기 결과</h1>
+
+<!-- 아이디 선택 폼 -->
+<form id="userIdForm" th:action="@{/users/retrieve/sequrity-question}" method="get" th:object="${findForm}">
+    <div class="form-group">
+        <label for="userId">아이디 선택</label>
+        <select id="userId" name="userId" required>
+            <option value="" selected>선택</option>
+            <th:block th:each="user : ${userFindResponses}">
+                <option th:value="${user.userId}" th:text="${user.maskedUsername}"></option>
+            </th:block>
+        </select>
+    </div>
+    <button type="submit">선택</button>
+</form>
+
+<!-- 보안 질문이 표시될 부분 -->
+<div id="securityQuestionDiv" style="display:none;">
+    <h2>보안 질문</h2>
+    <p id="securityQuestionText"></p>
+    <form id="securityAnswerForm" method="post">
+        <div class="form-group">
+            <label for="securityAnswer">답변</label>
+            <input type="text" id="securityAnswer" name="securityAnswer" required/>
+        </div>
+        <button type="submit">답변 제출</button>
+    </form>
+</div>
+
+<!-- 오류 메시지 -->
+<div id="errorMessage" class="error" style="display:none;"></div>
+
+<script>
+    // 사용자 아이디를 선택했을 때, 보안 질문을 요청하는 함수
+    $('#userId').on('change', function () {
+        var userId = $(this).val(); // 선택된 userId
+
+        if (userId) {
+            $.get("/users/retrieve/sequrity-question", { userId: userId }, function (data) {
+                if (data.error) {
+                    // 에러가 발생한 경우
+                    $('#errorMessage').text(data.error).show();
+                    $('#securityQuestionDiv').hide();
+                } else {
+                    // 성공적인 응답일 경우
+                    $('#errorMessage').hide();
+                    $('#securityQuestionText').text(data.message);
+                    $('#securityQuestionDiv').show();
+                }
+            }).fail(function () {
+                $('#errorMessage').text('서버 오류가 발생했습니다.').show();
+                $('#securityQuestionDiv').hide();
+            });
+        } else {
+            $('#errorMessage').hide();
+            $('#securityQuestionDiv').hide();
+        }
+    });
+
+    // 보안 질문 답변 제출 처리
+    $('#securityAnswerForm').on('submit', function (e) {
+        e.preventDefault(); // 기본 제출 방지
+
+        var securityAnswer = $('#securityAnswer').val();
+        var userId = $('#userId').val();
+        var action = 'FIND_ID'; // 예시로 action을 FIND_ID로 설정 (여기서는 사용자에 따라 action을 설정할 수 있음)
+
+        if (securityAnswer && userId) {
+            // 보안 질문 답변을 POST 요청으로 서버에 제출
+            $.post("/users/retrieve/security-answer", {
+                userId: userId,
+                securityAnswer: securityAnswer,
+                action: action
+            }, function (data) {
+                if (data.error) {
+                    alert("오류: " + data.error);
+                } else {
+                    // 응답이 성공적이면 성공 메시지
+                    alert("응답 성공: " + data.message);
+                    // 이후 결과에 따른 페이지 이동 등을 처리할 수 있습니다
+                }
+            }).fail(function () {
+                alert('서버 오류가 발생했습니다.');
+            });
+        } else {
+            alert("보안 질문 답변을 입력해주세요.");
+        }
+    });
+</script>
+
+</body>
+</html>
