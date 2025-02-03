@@ -21,7 +21,7 @@
 </head>
 <body>
 <h1>회원가입</h1>
-<form th:action="@{/users}" th:object="${signupForm}" method="post"
+<form th:action="@{/templates/users}" th:object="${signupForm}" method="post"
       onsubmit="return validateForm()">
     <div class="form-group">
         <label for="name">이름</label>

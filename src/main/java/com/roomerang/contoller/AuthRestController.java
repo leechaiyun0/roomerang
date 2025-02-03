@@ -6,11 +6,13 @@ import com.roomerang.dto.request.UserVerifyRequest;
 import com.roomerang.dto.response.UserFindResponse;
 import com.roomerang.repository.UserRepository;
 import com.roomerang.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.*;
@@ -78,26 +80,4 @@ public class AuthRestController {
         return ResponseEntity.ok(Collections.singletonMap("securityQuestion", securityQuestion));
     }
 
-    // [비밀번호 재설정] - 단계 2: 보안 답변 검증 후 비밀번호 재설정 페이지로 리다이렉트
-    @PostMapping("/reset-password/verify")
-    public ResponseEntity<?> verifyPasswordReset(@RequestBody UserVerifyRequest request) {
-        boolean isValid = userService.verifySecurityAnswer(request);
-
-        if (!isValid) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("보안 질문 답변이 일치하지 않습니다.");
-        }
-
-        // userService 혹은 request에서 사용자 식별자(예: userId)를 얻을 수 있다고 가정.
-        // 여기서는 request.getUserId()가 Long 타입을 반환하므로 String으로 변환합니다.
-        String userUid = String.valueOf(request.getUserId());
-
-        // 비밀번호 재설정을 위한 JWT 토큰 생성.
-        // 역할 정보가 필요하지 않은 경우 빈 리스트를 전달합니다.
-        String resetToken = jwtTokenProvider.createToken(userUid, List.of());
-
-        // 생성된 토큰을 쿼리 파라미터로 포함하여 비밀번호 재설정 페이지로 리다이렉트
-        URI redirectUri = URI.create("https://example.com/reset-password-form?token=" + resetToken);
-        return ResponseEntity.status(HttpStatus.FOUND).location(redirectUri).build();
-    }
 }

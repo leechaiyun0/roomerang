@@ -127,16 +127,18 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void resetPassword(Long userId, String newPassword) {
-        User user = userRepository.findById(userId)
+    public boolean resetPassword(String username, String newPassword) {
+        User user = userRepository.findByUsername(username)
                 .orElse(null);
 
         if (user == null) {
-            return;
+            return false;
         }
 
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
+
+        return true;
     }
 }
 

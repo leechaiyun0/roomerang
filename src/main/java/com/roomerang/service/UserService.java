@@ -17,5 +17,5 @@ public interface UserService {
     UserFindResponse validateUserForPasswordReset(UserFindRequest userFindRequest);
     boolean verifySecurityAnswer(UserVerifyRequest userVerifyRequest);
     String revealUsername(Long userId);
-    void resetPassword(Long userId, String newPassword);
+    boolean resetPassword(String username, String newPassword);
 }
