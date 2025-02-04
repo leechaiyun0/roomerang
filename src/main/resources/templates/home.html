@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -53,6 +53,7 @@
             color: #505D96;
         }
 
+
         .header-right {
             display: flex;
             align-items: center;
@@ -83,15 +84,17 @@
             font-weight: bold;
         }
 
+        /* ✅ 베너 스타일 */
         .banner {
             position: relative;
-            width: 100%;
-            max-width: 1200px;
+            width: 120%;
+            max-width: 1400px;
             height: 450px;
             margin: 20px auto;
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom : 100px;
         }
 
         .banner img {
@@ -122,6 +125,20 @@
         .right-arrow {
             right: 20px;
         }
+
+        .spacing{
+        height : 500px;
+        }
+
+        .footer {
+        text-align: center;
+        padding: 20px;
+        background-color: #F8F9FA;
+        color: #777E90;
+        font-size: 14px;
+        margin-top : 100px;
+        }
+
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -149,18 +166,14 @@
 </div>
 
 <div class="banner">
-    <button class="banner-arrow left-arrow" onclick="prevSlide()">
-        <img src="/images/left-arrow.png" alt="좌">
+    <button class="banner-arrow left-arrow" onclick="prevSlide()"><img src="/images/left-arrow.png" alt="좌">
     </button>
 
     <img id="bannerImage" src="/images/banner1.jpg" alt="배너 이미지">
-    <button class="banner-arrow right-arrow" onclick="nextSlide()">
-        <img src="/images/right-arrow.png" alt="우">
+
+    <button class="banner-arrow right-arrow" onclick="nextSlide()"><img src="/images/right-arrow.png" alt="우">
     </button>
 </div>
-
-
-
 
 <script>
     var bannerImages = [
@@ -188,6 +201,12 @@
 
     setInterval(nextSlide, 10000);
 </script>
+
+<div class="spacing"></div>
+
+<footer class="footer">
+    <p>MADE BY.백석대학교 학생들 일동</p>
+</footer>
 
 </body>
 </html>
