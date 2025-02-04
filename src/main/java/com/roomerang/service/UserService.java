@@ -2,7 +2,6 @@ package com.roomerang.service;
 
 import com.roomerang.dto.request.UserCreateRequest;
 import com.roomerang.dto.request.UserFindRequest;
-import com.roomerang.dto.request.UserVerifyRequest;
 import com.roomerang.dto.response.UserFindResponse;
 import com.roomerang.entity.User;
 import org.springframework.validation.BindingResult;
@@ -15,7 +14,8 @@ public interface UserService {
     User login(String username, String rawPassword);
     List<UserFindResponse> findMaskedUsersAndSecurityQuestion(UserFindRequest userFindRequest);
     UserFindResponse validateUserForPasswordReset(UserFindRequest userFindRequest);
-    boolean verifySecurityAnswer(UserVerifyRequest userVerifyRequest);
+    boolean verifySecurityAnswerByUsername(String username, String securityAnswer);
+    boolean verifySecurityAnswerById(Long userId, String securityAnswer);
     String revealUsername(Long userId);
     boolean resetPassword(String username, String newPassword);
 }

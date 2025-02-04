@@ -18,7 +18,6 @@ public class UserFindRequest {
     @NotBlank
     private String name;
 
-    @NotBlank
     private String username;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")

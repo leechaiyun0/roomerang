@@ -21,7 +21,7 @@
 </head>
 <body>
 <h1>회원가입</h1>
-<form th:action="@{/templates/users}" th:object="${signupForm}" method="post"
+<form th:action="@{/auth/signup}" th:object="${signupForm}" method="post"
       onsubmit="return validateForm()">
     <div class="form-group">
         <label for="name">이름</label>
@@ -89,7 +89,7 @@
             }
 
             try {
-                const response = await fetch(`/users/check-username?username=${encodeURIComponent(usernameValue)}`);
+                const response = await fetch(`/auth/check-username?username=${encodeURIComponent(usernameValue)}`);
 
                 if (!response.ok) {
                     const error = await response.json();

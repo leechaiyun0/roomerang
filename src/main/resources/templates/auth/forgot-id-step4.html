@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>아이디 찾기 완료</title>
+  <style>
+    .form-group { margin-bottom: 15px; }
+  </style>
+</head>
+<body>
+<h1>아이디 찾기 완료</h1>
+
+<p>회원님의 아이디는 다음과 같습니다.</p>
+
+<h2><strong th:text="${username}">실제 아이디</strong></h2>
+
+<p>
+  <a href="/auth/login">로그인 페이지로 이동</a>
+</p>
+</body>
+</html>

@@ -18,4 +18,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findAllByNameAndBirthDateAndGender(String name, LocalDate birthDate, User.Gender gender);
     @Query("SELECT u.username FROM User u WHERE u.id = :id")
     String findUsernameById(@Param("id") Long id);
+    @Query("SELECT u.securityQuestion FROM User u WHERE u.id = :id")
+    String findSecurityQuestionByUserId(@Param("id") Long id);
 }

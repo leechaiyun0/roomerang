@@ -7,7 +7,7 @@
 <body>
 <h1>환영합니다, <span th:text="${loginUser.name}"></span>님!</h1>
 <p>로그아웃하려면 아래 버튼을 클릭하세요.</p>
-<form th:action="@{/users/logout}" method="post">
+<form th:action="@{/auth/logout}" method="post">
     <button type="submit">로그아웃</button>
 </form>
 </body>

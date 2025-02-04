@@ -55,13 +55,13 @@ public class JwtTokenProvider {
     /**
      * JWT 토큰 생성
      *
-     * @param userUid 사용자 식별자 (subject)
+     * @param username 사용자 식별자 (subject)
      * @param roles   사용자 역할 목록
      * @return 생성된 JWT 토큰 문자열
      */
-    public String createToken(String userUid, List<String> roles) {
+    public String createToken(String username, List<String> roles) {
         LOGGER.info("[createToken] 토큰 생성 시작");
-        Claims claims = Jwts.claims().setSubject(userUid);
+        Claims claims = Jwts.claims().setSubject(username);
         claims.put("roles", roles);
 
         Date now = new Date();
@@ -99,6 +99,7 @@ public class JwtTokenProvider {
      * @param token JWT 토큰
      * @return 토큰에 담긴 subject 값
      */
+
     public String getUsername(String token) {
         LOGGER.info("[getUsername] 토큰 기반 회원 구별 정보 추출");
         String info = Jwts.parserBuilder()

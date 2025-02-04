@@ -9,9 +9,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserVerifyRequest {
-    @NotNull
-    private Long userId;
+    private long userId;
+
+    private String username;
 
     @NotNull
     private String securityAnswer;
+
+    public UserVerifyRequest(String username, String securityAnswer) {
+        this.username = username;
+        this.securityAnswer = securityAnswer;
+    }
 }

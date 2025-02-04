@@ -2,7 +2,6 @@ package com.roomerang.service;
 
 import com.roomerang.dto.request.UserCreateRequest;
 import com.roomerang.dto.request.UserFindRequest;
-import com.roomerang.dto.request.UserVerifyRequest;
 import com.roomerang.dto.response.UserFindResponse;
 import com.roomerang.entity.User;
 import com.roomerang.repository.UserRepository;
@@ -37,7 +36,6 @@ public class UserServiceImpl implements UserService {
             bindingResult.rejectValue("username", "duplicate", "이미 사용 중인 아이디입니다.");
             return false;
         }
-
         User user = new User(
                 userCreateRequest.getName(),
                 userCreateRequest.getBirthDate(),
@@ -77,15 +75,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean verifySecurityAnswer(UserVerifyRequest verifyRequest) {
-        User user = userRepository.findById(verifyRequest.getUserId())
+    public boolean verifySecurityAnswerByUsername(String username, String securityAnswer) {
+        User user = userRepository.findByUsername(username)
                 .orElse(null);
 
         if (user == null) {
             return false;
         }
 
-        return user.getSecurityAnswer().equals(verifyRequest.getSecurityAnswer());
+        return user.getSecurityAnswer().equals(securityAnswer);
+    }
+
+    @Override
+    public boolean verifySecurityAnswerById(Long userId, String securityAnswer) {
+        User user = userRepository.findById(userId)
+                .orElse(null);
+
+        if (user == null) {
+            return false;
+        }
+
+        return user.getSecurityAnswer().equals(securityAnswer);
     }
 
     @Override
@@ -134,10 +144,8 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return false;
         }
-
         user.setPassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
-
         return true;
     }
 }
