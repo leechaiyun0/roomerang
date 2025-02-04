@@ -35,6 +35,8 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 // URL 별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
+                        // 정적 리소스(`/images/**`)에 대한 접근 허용
+                        .requestMatchers("/images/**").permitAll()
                         // 예시: GET 방식의 /auth/** 경로는 누구나 접근 가능
                         .requestMatchers(HttpMethod.GET, "/", "/auth/**").permitAll()
                         // 예시: POST 방식의 /auth/** 경로는 누구나 접근 가능 (로그인, 회원가입 등)
