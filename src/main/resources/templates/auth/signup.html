@@ -4,18 +4,180 @@
     <meta charset="UTF-8">
     <title>회원가입</title>
     <style>
-        .error {
-            color: red;
-            font-size: 0.9em;
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
         }
-        .form-group {
-            margin-bottom: 15px;
+
+        body {
+            background-color: #F8F9FC;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            height: 100vh;
+            padding-top: 50px; /* h1을 위로 올려서 상단 배치 */
         }
-        label {
+
+        h1 {
+            font-size: 28px; /* 글자 크기 증가 */
             font-weight: bold;
+            color: #000; /* 검은색 */
+            text-align: center;
+            margin-bottom: 10px;
         }
-        .error-border {
-            border: 1px solid red;
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 700px;
+            text-align: center;
+        }
+
+        .form-group {
+            width: 700px;
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 10px;
+            font-size: 14px;
+
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: none;
+            background-color: #EDF2F7;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .form-group {
+            padding: 10px;
+            font-size: 12px;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .form-groupId{
+            padding: 10px;
+            font-size: 12px;
+            color: black;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width:80%;
+        }
+
+        .inline-button{
+            width:10%;
+            height:45px;
+            padding: 12px 15px;
+            font-size: 12 px;
+            display: block;
+            background-color: #505D96;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-group .inline-button:hover {
+            background-color: #424C7D; /* 호버 효과 */
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+        }
+
+        .row input {
+            width: 32%;
+        }
+
+        .radio-group {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .radio-group button {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #EDF2F7;
+            color: black;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .radio-group button.active {
+            background-color: #505D96;
+            color: white;
+        }
+
+        .button-group {
+            display: flex; /* 버튼을 가로 정렬 */
+            justify-content: center; /* 가운데 정렬 */
+            gap: 10px; /* 버튼 간격 */
+            margin-top: 10px; /* 위쪽 여백 */
+            width: 700px;
+            margin-top: 70px;
+            margin-bottom: 70px;
+        }
+
+        .button-group button {
+            flex: 1; /* 같은 크기로 설정 */
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #505D96;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            margin-bottom: 70px;
+        }
+
+        .button-group button:hover {
+            background-color: #424C7D;
+        }
+
+        .btn-lg{
+            background-color: #505D96;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .cancle{
+            background-color: #505D96;
+            color: white;
+            border-radius: 10px;
         }
     </style>
 </head>
@@ -25,7 +187,7 @@
       onsubmit="return validateForm()">
     <div class="form-group">
         <label for="name">이름</label>
-        <input type="text"
+        <input class="name-input" type="text"
                id="name"
                th:field="*{name}"
                placeholder="이름 입력"
@@ -55,7 +217,7 @@
     </div>
 
     <div class="form-group">
-        <label for="username">아이디</label>
+        <label class="form-groupId" for="username">아이디</label>
         <div style="display: flex; align-items: center;">
             <input type="text"
                    id="username"
@@ -65,8 +227,8 @@
                    oninput="resetUsernameCheck()" />
             <!-- ↑ oninput: 아이디를 수정하면 중복확인 상태를 false로 되돌리기 -->
 
-            <button type="button" onclick="checkUsername()" style="margin-left: 8px;">
-                중복 확인
+            <button class="inline-button" type="button" onclick="checkUsername()" style="margin-left: 8px;">
+                중복<br>확인
             </button>
         </div>
 
@@ -118,6 +280,7 @@
   "만약 securityQuestion이 이 중 하나면, 그걸 SELECT로 선택,
    아니면 CUSTOM으로 간주" 로직을 쓸 수 있음
 -->
+
     <th:block th:with="q1='가장 좋아했던 동화책의 제목은 무엇입니까?',
                    q2='부모님이 처음 만난 도시는 어디입니까?',
                    q3='처음으로 가보았던 해변의 이름은 무엇입니까?',
@@ -151,7 +314,7 @@
                         th:selected="${#lists.contains({q1,q2,q3,q4,q5}, signupForm.securityQuestion) == false
                                   and signupForm.securityQuestion != null
                                   and signupForm.securityQuestion != ''}"
-                th:text="'자유 입력'">
+                        th:text="'자유 입력'">
                 </option>
             </select>
 
@@ -246,12 +409,13 @@
                th:classappend="${#fields.hasErrors('passwordConfirm')} ? 'error-border' : ''" />
         <div th:if="${#fields.hasErrors('passwordConfirm')}" th:errors="*{passwordConfirm}" class="error"></div>
     </div>
-
-    <button type="submit">회원가입</button>
-    <button class="w-100 btn btn-secondary btn-lg"
-            th:onclick="|location.href='@{/}'|"
-            type="button">취소
-    </button>
+    <div class="button-group">
+        <button class="btn-lg" type="submit">회원가입</button>
+        <button class="w-100 btn btn-secondary cancle"
+                th:onclick="|location.href='@{/}'|"
+                type="button">취소
+        </button>
+    </div>
 </form>
 
 <script>

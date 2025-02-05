@@ -167,6 +167,9 @@ public class AuthController {
             @Validated @ModelAttribute("resetPwForm") UserFindRequest request,
             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
+        /*bindingResult = 오류를 담는 객체
+            만약 오류가 나면 다시 원 페이지로 돌아감
+        */
         if (bindingResult.hasErrors()) {
             log.info("[reset-password] errors={}", bindingResult);
             return "auth/reset-password-step1";
