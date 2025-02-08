@@ -5,19 +5,104 @@
     <meta charset="UTF-8">
     <title>아이디 찾기 - 보안 질문 확인</title>
     <style>
-        .form-group { margin-bottom: 15px; }
-        .error { color: red; }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap');
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        body {
+            background-color: #F8F9FC;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #ffffff;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 14px;
+            color: #333333;
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .form-group input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #d1d5db;
+            background-color: #EDF2F7;
+            font-size: 14px;
+            color: #333333;
+        }
+
+        button[type="submit"] {
+            width: 100%;
+            padding: 15px;
+            background-color: #505D96;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #424C7D;
+        }
+
+        .error {
+            border-color: #dc3545;
+            color: #dc3545;
+            background-color: #FFF5F5;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
-<h1>아이디 찾기</h1>
-<p>아래의 보안 질문에 답변해 주세요.</p>
-
-<!-- 보안 질문 표시 -->
-<p><strong>보안 질문:</strong> <span th:text="${securityQuestion}">보안 질문이 여기에 표시됩니다.</span></p>
-
 <!-- 보안 질문 답변 입력 폼 -->
 <form th:action="@{/auth/find-id/verify}" th:object="${verifyForm}" method="post">
+    <img src="/images/logo.png" alt="룸메랑 로고" height="80">
+    <h1>아이디 찾기</h1>
+    <p>아래의 보안 질문에 답변해 주세요.</p>
+
+    <!-- 보안 질문 표시 -->
+    <p><strong>보안 질문:</strong> <span th:text="${securityQuestion}">보안 질문이 여기에 표시됩니다.</span></p>
+
     <!-- userId를 hidden 필드로 포함 -->
     <input type="hidden" name="userId" th:value="${userId}" />
 
