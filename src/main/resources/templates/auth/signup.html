@@ -14,16 +14,44 @@
             font-family: 'Noto Sans KR', sans-serif;
         }
 
+        body, html {
+            height: 100%;
+            overflow-y: auto;  /* 세로 스크롤 추가 */
+        }
+
+        .container {
+            overflow-y: auto;  /* 폼 안에서 스크롤 가능하게 */
+        }
+        /* 전체 페이지 스크롤바 숨기기 */
+        body::-webkit-scrollbar {
+            display: none;  /* 스크롤바 숨기기 */
+        }
+
+        .container::-webkit-scrollbar {
+            display: none;  /* 폼 안의 스크롤바 숨기기 */
+        }
+
+        /* 다른 브라우저 호환성 (Firefox 등) */
+        body {
+            scrollbar-width: none;  /* Firefox에서 스크롤바 숨기기 */
+            -ms-overflow-style: none;  /* IE, Edge에서 스크롤바 숨기기 */
+        }
+
+        .container {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+
         body {
             background-color: #F8F9FC;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
-            padding-top: 50px 20px;
-            min-height: 100vh;
-            overflow-y: auto;
+            min-height: 100vh;  /* 최소 높이로 설정 */
+            padding: 20px;  /* 여유 공간 추가 */
+            overflow-y: auto;  /* 넘치는 내용은 스크롤 처리 */
         }
 
         form img {
@@ -31,6 +59,28 @@
             margin-bottom: 0;  /* 로고 아래 여백 제거 */
             padding: 0;
         }
+        @media (max-height: 800px) {
+            .container {
+                padding: 20px;  /* 화면이 작으면 패딩 줄이기 */
+                width: 350px;   /* 폼 너비도 줄이기 */
+                max-height: 85vh;  /* 최대 높이 줄이기 */
+            }
+
+            h1 {
+                font-size: 20px;  /* 제목 크기 줄이기 */
+                margin-bottom: 15px;
+            }
+
+            .form-group {
+                margin-bottom: 10px;  /* 입력 필드 사이 여백 줄이기 */
+            }
+
+            button {
+                padding: 10px;  /* 버튼 크기 줄이기 */
+                font-size: 14px;
+            }
+        }
+
 
         form h1 {
             font-size: 24px;
@@ -46,11 +96,14 @@
         .container {
             background-color: white;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: 400px;
+            max-height: 90vh;  /* 전체 화면 높이의 90%로 제한 */
+            overflow-y: auto;  /* 넘치는 내용은 스크롤로 처리 */
             text-align: center;
         }
+
 
         .form-group {
             text-align: left;
@@ -199,7 +252,7 @@
 </head>
 <body>
 <div class="container">
-    <img src="/images/logo.png" alt="룸메랑로고" height="80">
+    <img src="/images/logo.png" alt="룸메랑 로고" height="80">
     <h1>회원가입</h1>
 
     <form th:action="@{/auth/signup}" th:object="${signupForm}" method="post">
