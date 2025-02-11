@@ -190,7 +190,7 @@
 <body>
 <div class="form">
     <form th:action="@{/auth/find-id}" th:object="${findIdForm}" method="post">
-        <img src="/images/logo.png" alt="룸메랑 로고" height="80">
+        <img th:src="@{/images/logo.png}" alt="룸메랑 로고" height="80">
         <h1>아이디 찾기</h1>
         <div th:if="${#fields.hasGlobalErrors()}">
             <p class="field-error" th:each="err : ${#fields.globalErrors()}"

@@ -54,7 +54,6 @@
             color: #505D96;
         }
 
-
         .header-right {
             display: flex;
             align-items: center;
@@ -73,26 +72,45 @@
             cursor: pointer;
         }
 
-        .user-actions {
+        .user-menu {
+            position: relative;
             display: flex;
-            gap: 20px;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
         }
 
-        .user-actions a {
+        .user-menu img {
+            width: 20px;
+            height: auto;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background-color: white;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            min-width: 150px;
+            z-index: 10;
+        }
+
+        .dropdown-content a {
+            display: block;
+            padding: 10px;
             text-decoration: none;
             color: #777E90;
             font-size: 14px;
             font-weight: bold;
         }
 
-        .username {
-            text-decoration: none;
-            color: #777E90;
-            font-size: 14px;
-            font-weight: bold;
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
         }
 
-        /* ✅ 베너 스타일 */
+        /* ✅ 배너 스타일 */
         .banner {
             position: relative;
             width: 120%;
@@ -102,7 +120,7 @@
             overflow: hidden;
             border-radius: 12px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom : 100px;
+            margin-bottom: 100px;
         }
 
         .banner img {
@@ -134,157 +152,110 @@
             right: 20px;
         }
 
-        .spacing{
-        height : 500px;
+        .spacing {
+            height: 500px;
         }
 
         .footer {
-        text-align: center;
-        padding: 20px;
-        background-color: #F8F9FA;
-        color: #777E90;
-        font-size: 14px;
-        margin-top : 100px;
-        }
-
-        .user-menu {
-            position: relative;
-            display: inline-block;
-        }
-
-        .user-menu img {
-            width: 20px;
-            height: auto;
-            cursor: pointer;
-         }
-
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            background-color: white;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-            min-width: 150px;
-            z-index: 10;
-        }
-
-        .dropdown-content a {
-            display: block;
-            padding: 10px;
-            text-decoration: none;
+            text-align: center;
+            padding: 20px;
+            background-color: #F8F9FA;
             color: #777E90;
             font-size: 14px;
-            font-weight: bold;
+            margin-top: 100px;
         }
-
-        .dropdown-content a:hover {
-            background-color: #f1f1f1;
-        }
-
     </style>
 
 </head>
 
 <body>
 
-        <!-- 네비게이션 바 -->
-        <div class="navbar">
-            <div class="logo">
-                <img src="/images/logo.png" alt="룸메랑 로고">
-            </div>
-            <div class="nav-links">
-                <a href="#">매칭해방</a>
-                <a href="#">나눔해방</a>
-            </div>
+<!-- 네비게이션 바 -->
+<div class="navbar">
+    <div class="logo">
+        <img th:src="@{/images/logo.png}" alt="룸메랑 로고">
+    </div>
+    <div class="nav-links">
+        <a th:href="@{/board/rooms}">매칭해방</a>
+        <a th:href="@{/share/list}">나눔해방</a>
+    </div>
 
-            <div class="header-right">
-                <div class="icons">
-                    <a href="#"><img src="/images/chat.png" alt="채팅"></a>
-                    <a href="#"><img src="/images/alarm.png" alt="알림"></a>
-                    <a href="#"><img src="/images/my-page.png" alt="내정보"></a>
-                </div>
-
-                <div class="user-menu">
-                    <span th:text="${loginUser.name} + '님'" class="username"></span>
-                    <img src="/images/plus.png" alt="더보기" class="toggle-button">
-                    <div class="dropdown-content">
-                        <a href="/#">내 정보</a>
-                        <a href="/#">관심 목록</a>
-                        <a href="/#">리뷰 보기</a>
-                        <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
-                        <form id="logoutForm" th:action="@{/auth/logout}" method="post" style="display: none;"></form>
-                        <!--<form th:action="@{/auth/logout}" method="post">
-                            <button type="submit">로그아웃</button>
-                        </form>-->
-                    </div>
-                </div>
-            </div>
+    <div class="header-right">
+        <div class="icons">
+            <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
+            <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
+            <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
         </div>
 
-        <!-- 배너 -->
-        <div class="banner">
-            <button class="banner-arrow left-arrow" onclick="prevSlide()"><img src="/images/left-arrow.png">
-            </button>
-
-            <img id="bannerImage" src="/images/banner1.jpg" alt="배너 이미지">
-
-            <button class="banner-arrow right-arrow" onclick="nextSlide()"><img src="/images/right-arrow.png">
-            </button>
+        <div class="user-menu">
+            <span th:text="${loginUser.name} + '님'" class="username"></span>
+            <img th:src="@{/images/plus.png}" alt="더보기" class="toggle-button">
+            <div class="dropdown-content">
+                <a href="#">내 정보</a>
+                <a href="#">관심 목록</a>
+                <a href="#">리뷰 보기</a>
+                <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
+                <form id="logoutForm" th:action="@{/auth/logout}" method="post" style="display: none;"></form>
+            </div>
         </div>
+    </div>
+</div>
 
-        <script>
+<!-- 배너 -->
+<div class="banner">
+    <button class="banner-arrow left-arrow" onclick="prevSlide()"><img th:src="@{/images/left-arrow.png}"></button>
+    <img id="bannerImage" th:src="@{/images/banner1.jpg}" alt="배너 이미지">
+    <button class="banner-arrow right-arrow" onclick="nextSlide()"><img th:src="@{/images/right-arrow.png}"></button>
+</div>
 
-            /* 더보기 */
-            document.addEventListener("DOMContentLoaded", function() {
-                const userMenu = document.querySelector(".toggle-button");
-                const dropdown = document.querySelector(".dropdown-content");
+<script>
+    /* 드롭다운 메뉴 */
+    document.addEventListener("DOMContentLoaded", function () {
+        const userMenu = document.querySelector(".toggle-button");
+        const dropdown = document.querySelector(".dropdown-content");
 
-                userMenu.addEventListener("click", function(event) {
-                    event.stopPropagation();
-                    dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-                });
+        userMenu.addEventListener("click", function (event) {
+            event.stopPropagation();
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
 
-                document.addEventListener("click", function(event) {
-                    if (!userMenu.contains(event.target)) {
-                        dropdown.style.display = "none";
-                    }
-                });
-            });
-
-          /* 베너 */
-           var bannerImages = [
-           "/images/banner1.jpg",
-           "/images/banner2.jpg",
-           "/images/banner3.jpg"
-            ];
-            var currentIndex = 0;
-
-            function prevSlide() {
-                currentIndex = (currentIndex - 1 + bannerImages.length) % bannerImages.length;
-                updateBanner();
+        document.addEventListener("click", function (event) {
+            if (!userMenu.contains(event.target)) {
+                dropdown.style.display = "none";
             }
+        });
+    });
 
-            function nextSlide() {
-                currentIndex = (currentIndex + 1) % bannerImages.length;
-                updateBanner();
-            }
+    /* 배너 슬라이드 */
+    var bannerImages = [
+        "/images/banner1.jpg",
+        "/images/banner2.jpg",
+        "/images/banner3.jpg"
+    ];
+    var currentIndex = 0;
 
-            function updateBanner() {
-                $("#bannerImage").fadeOut(200, function () {
-                    $(this).attr("src", bannerImages[currentIndex]).fadeIn(200);
-                });
-            }
+    function prevSlide() {
+        currentIndex = (currentIndex - 1 + bannerImages.length) % bannerImages.length;
+        updateBanner();
+    }
 
-            setInterval(nextSlide, 10000);
-        </script>
+    function nextSlide() {
+        currentIndex = (currentIndex + 1) % bannerImages.length;
+        updateBanner();
+    }
 
-        <div class="spacing"></div>
+    function updateBanner() {
+        document.getElementById("bannerImage").src = bannerImages[currentIndex];
+    }
 
-        <footer class="footer">
-            <p>MADE BY.백석대학교 학생들 일동</p>
-        </footer>
+    setInterval(nextSlide, 10000);
+</script>
+
+<div class="spacing"></div>
+
+<footer class="footer">
+    <p>MADE BY. 백석대학교 학생들 일동</p>
+</footer>
 
 </body>
-
 </html>

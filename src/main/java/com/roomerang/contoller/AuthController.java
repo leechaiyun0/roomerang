@@ -271,4 +271,9 @@ public class AuthController {
         log.info("비밀번호 재설정 성공");
         return "auth/reset-password-success"; // 비밀번호 변경 성공 후 로그인 페이지로 리다이렉트
     }
+
+   /* @GetMapping("/aaa")
+    public void aaa(){
+        log.info("aaa");
+    }*/
 }

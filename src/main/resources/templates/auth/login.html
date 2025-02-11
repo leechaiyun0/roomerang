@@ -119,7 +119,7 @@
 </head>
 <body>
 <div class="container">
-    <img src="/images/logo.png" alt="룸메랑 로고" height="80">
+    <img th:src="@{/images/logo.png}" alt="룸메랑 로고" height="80">
     <h1>로그인</h1>
 
     <form th:action="@{/auth/login}" th:object="${loginForm}" method="post">

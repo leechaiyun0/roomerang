@@ -146,17 +146,17 @@
 
 <div class="navbar">
     <div class="logo">
-        <img src="/images/logo.png" alt="룸메랑 로고">
+        <img th:src="@{/images/logo.png}" alt="로고">
     </div>
     <div class="nav-links">
-        <a href="roomList">매칭해방</a>
-        <a href="#">소통해방</a>
+        <a th:href="@{/board/rooms}">매칭해방</a>
+        <a th:href="@{/share/list}">나눔해방</a>
     </div>
     <div class="header-right">
         <div class="icons">
-            <a href="#"><img src="/images/chat.png" alt="채팅"></a>
-            <a href="#"><img src="/images/alarm.png" alt="알림"></a>
-            <a href="#"><img src="/images/my-page.png" alt="내정보"></a>
+            <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
+            <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
+            <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
         </div>
         <div class="user-actions">
             <a th:href="@{/auth/login}">로그인</a>
@@ -166,12 +166,12 @@
 </div>
 
 <div class="banner">
-    <button class="banner-arrow left-arrow" onclick="prevSlide()"><img src="/images/left-arrow.png" alt="좌">
+    <button class="banner-arrow left-arrow" onclick="prevSlide()"><img th:src="@{/images/left-arrow.png}" alt="좌">
     </button>
 
-    <img id="bannerImage" src="/images/banner1.jpg" alt="배너 이미지">
+    <img id="bannerImage" th:src="@{/images/banner1.jpg}" alt="배너 이미지">
 
-    <button class="banner-arrow right-arrow" onclick="nextSlide()"><img src="/images/right-arrow.png" alt="우">
+    <button class="banner-arrow right-arrow" onclick="nextSlide()"><img th:src="@{/images/right-arrow.png}" alt="우">
     </button>
 </div>
 
