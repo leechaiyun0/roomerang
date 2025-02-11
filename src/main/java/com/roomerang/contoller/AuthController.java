@@ -247,7 +247,7 @@ public class AuthController {
     }
 
 
-    // [비밀번호 재설정 처리] - POST 요청: 폼 제출 시 새 비밀번호 저장
+    // [비밀번호 재설정 처리]- POST 요청: 폼 제출 시 새 비밀번호 저장
     @PostMapping("/reset-password")
     public String resetPassword(@RequestParam("token") String token,
                                 @Validated @ModelAttribute ("passwordForm") PasswordResetRequest request,
