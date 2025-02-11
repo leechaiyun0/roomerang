@@ -64,12 +64,14 @@ public class AuthController {
         return "auth/success";
     }
 
+    // [로그인] - GET 요청 : 로그인 페이지로 리다이렉트
     @GetMapping("/login")
     public String loginForm(Model model) {
         model.addAttribute("loginForm", new UserLoginRequest());
         return "auth/login";
     }
 
+    // [로그인] - POST 요청 : 아이디, 비밀번호 검증 후 로그인 처리
     @PostMapping("/login")
     public String login(@Validated @ModelAttribute ("loginForm") UserLoginRequest userLoginRequest, BindingResult bindingResult, HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
@@ -120,7 +122,7 @@ public class AuthController {
         List<UserFindResponse> responses = userService.findMaskedUsersAndSecurityQuestion(request);
 
         if (responses.isEmpty()) {
-            bindingResult.reject("error", "일치하는 사용자를 찾을 수 없습니다.");
+            bindingResult.reject("error", "해당 정보로 가입된 사용자를 찾을 수 없습니다.");
             return "auth/forgot-id-step1";
         }
 
@@ -146,6 +148,9 @@ public class AuthController {
         boolean isValid = userService.verifySecurityAnswerById(request.getUserId(), request.getSecurityAnswer());
         if (!isValid) {
             bindingResult.reject("error", "보안 질문 답변이 일치하지 않습니다.");
+            String securityQuestion = userRepository.findSecurityQuestionByUserId(request.getUserId());
+            model.addAttribute("securityQuestion", securityQuestion);
+            model.addAttribute("userId", request.getUserId());
             return "auth/forgot-id-step3";
         }
 
@@ -153,6 +158,7 @@ public class AuthController {
         model.addAttribute("username", fullUsername);
         return "auth/forgot-id-step4"; // 최종적으로 전체 아이디(실제 아이디)를 보여주는 페이지
     }
+
 
     // [비밀번호 찾기] - 단계 0: 비밀번호 재설정 페이지 접속
     @GetMapping("/reset-password")
@@ -167,9 +173,6 @@ public class AuthController {
             @Validated @ModelAttribute("resetPwForm") UserFindRequest request,
             BindingResult bindingResult, RedirectAttributes redirectAttributes) {
 
-        /*bindingResult = 오류를 담는 객체
-            만약 오류가 나면 다시 원 페이지로 돌아감
-        */
         if (bindingResult.hasErrors()) {
             log.info("[reset-password] errors={}", bindingResult);
             return "auth/reset-password-step1";
@@ -199,13 +202,17 @@ public class AuthController {
     }
 
 
-    // [비밀번호 재설정] - 단계 2: 보안 답변 검증 후 비밀번호 재설정 페이지로 리다이렉트
+    // [비밀번호 재설정] - 단계 3: 보안 답변 검증 후 비밀번호 재설정 페이지로 리다이렉트
     @PostMapping("/reset-password/verify")
     public String verifyPasswordReset(
             @Validated @ModelAttribute("verifyForm") UserVerifyRequest request,
-            BindingResult bindingResult) {
+            BindingResult bindingResult,
+            Model model) {
         if (bindingResult.hasErrors()) {
             log.info("[reset-password-verify] errors={}", bindingResult);
+            model.addAttribute("username", request.getUsername());
+            String securityQuestion = userRepository.findSecurityQuestionByUsername(request.getUsername());
+            model.addAttribute("securityQuestion", securityQuestion);
             return "auth/reset-password-step2";
         }
 
@@ -213,6 +220,9 @@ public class AuthController {
 
         if (!isValid) {
             bindingResult.reject("error", "보안 질문 답변이 일치하지 않습니다.");
+            model.addAttribute("username", request.getUsername());
+            String securityQuestion = userRepository.findSecurityQuestionByUsername(request.getUsername());
+            model.addAttribute("securityQuestion", securityQuestion);
             return "auth/reset-password-step2";
         }
 
@@ -222,6 +232,7 @@ public class AuthController {
         return "redirect:/auth/reset-password/form?token=" + resetToken;
     }
 
+    // [비밀번호 재설정] - 비밀번호 재설정 페이지로 리다이렉트 시 토큰 검증
     @GetMapping("/reset-password/form")
     public String showResetPasswordForm(@RequestParam("token") String token, Model model) {
         // JWT 토큰 검증

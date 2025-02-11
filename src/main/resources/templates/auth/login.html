@@ -81,6 +81,20 @@
             border-radius: 5px;
             cursor: pointer;
             text-align: center;
+            margin-top: 20px;
+        }
+
+        .btn btn-secondary{
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            background-color: #505D96;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
         }
 
         .btn:hover {
@@ -137,10 +151,8 @@
             <input type="password" id="password" th:field="*{password}" placeholder="비밀번호 입력">
         </div>
 
-        <div class="btn-group">
             <button class="btn" type="submit">로그인</button>
             <button class="btn btn-secondary" th:onclick="|location.href='@{/}'|" type="button">취소</button>
-        </div>
     </form>
 
     <div class="link-group">
