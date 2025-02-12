@@ -1,28 +1,27 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>글 등록</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script>
+        function toggleFields() {
+            var category = document.getElementById("category").value;
+            var extraFields = document.getElementById("extraFields");
+            extraFields.style.display = (category === "방 있음") ? "block" : "none";
+        }
+    </script>
 </head>
 <body>
+
 <h1>글 등록</h1>
 
-<form th:action="@{/board/post/save}" method="post" enctype="multipart/form-data">
+<form th:action="@{/board/post/save}" method="post">
+    <label>제목: <input type="text" name="rmBoardTitle" required></label><br>
+    <label>내용: <textarea name="postContent" required></textarea>
 
-    <label>카테고리:
-        <select name="category">
-            <option value="방 있음">방 있음</option>
-            <option value="방 없음">방 없음</option>
-        </select>
     </label><br>
-
-    <label>제목: <input type="text" name="rm_board_title" required></label><br>
-    <label>내용: <textarea name="post_content" required></textarea></label><br>
-    <label>사진: <input type="file" name="photoFile"></label><br>
-    <label>금액: <input type="number" name="amount" required></label><br>
-    <label for="author_region">지역:</label>
-    <select name="author_region" id="author_region" required>
+    <label for="authorRegion">지역:</label>
+    <select name="authorRegion" id="authorRegion" required>
         <option value="">지역을 선택하세요</option>
         <option value="두정동">두정동</option>
         <option value="쌍용동">쌍용동</option>
@@ -43,107 +42,26 @@
         <option value="광덕면">광덕면</option>
         <option value="업성동">업성동</option>
         <option value="청당동">청당동</option>
-        <option value="청수동">청수동</option>
     </select>
-    <label>보증금: <input type="number" name="deposit" required></label><br>
 
+    <label>카테고리:
+        <select id="category" name="category" onchange="toggleFields()">
+            <option value="방 있음">방 있음</option>
+            <option value="방 없음">방 없음</option>
+        </select>
+    </label><br>
+
+    <div id="extraFields" style="display:none;">
+        <label>금액: <input type="number" name="amount"></label><br>
+        <label>보증금: <input type="number" name="deposit"></label><br>
+    </div>
 
     <button type="submit">등록</button>
 </form>
 
 <a href="/board/rooms">목록</a>
+
+<script>toggleFields();</script>
+
 </body>
 </html>
-
-
-
-<style>
-    /* ✅ 전체 페이지 스타일 */
-    body {
-        background-color: #F8F9FA;
-        font-family: 'Noto Sans KR', sans-serif;
-    }
-
-    .container {
-        ;background-color: white;
-        padding: 30px;
-        border-radius: 12px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        width: 60%;
-        max-width: 800px;
-        margin: auto;
-        margin-top: 30px;
-    }
-
-    h1 {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
-
-    /* ✅ 폼 스타일 */
-    form {
-        display: flex;
-        flex-direction: column;
-        gap: 15px;
-    }
-
-    label {
-        display: block; /* 라벨을 블록 요소로 만들어 줄바꿈 */
-        font-size: 16px;
-        font-weight: bold;
-        margin-bottom: 5px;
-    }
-
-    input[type="number"] {
-        width: 100%; /* 입력 필드 전체 너비 사용 */
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        font-size: 16px;
-    }
-
-    input, textarea, select {
-        width: 100%;
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #ced4da;
-        font-size: 16px;
-    }
-
-    textarea {
-        resize: none;
-        height: 100px;
-    }
-
-    /* ✅ 버튼 스타일 */
-    .btn-custom {
-        background-color: #505D96;
-        color: white;
-        padding: 12px 20px;
-        border-radius: 8px;
-        text-decoration: none;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        text-align: center;
-        min-width: 120px;
-    }
-
-    .btn-custom:hover {
-        background-color: #424C7D;
-    }
-
-    .back-link {
-        display: block;
-        margin-top: 20px;
-        color: #505D96;
-        font-weight: bold;
-        text-decoration: none;
-    }
-
-    .back-link:hover {
-        text-decoration: underline;
-    }
-</style>

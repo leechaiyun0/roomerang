@@ -16,37 +16,37 @@ public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long rm_Post_Id;
+    private Long rmPostId;
 
     @Column(nullable = false, length = 200)
-    private String rm_board_title;
+    private String rmBoardTitle;
 
     @Column(nullable = false, length = 200)
-    private String author_name;
+    private String authorName;
 
     @Column(nullable = false)
     private LocalDateTime postDate;
 
     @Column(nullable = false)
-    private Integer post_views;
+    private Integer postViews;
 
     @Column(nullable = false, length = 200)
-    private String author_region;
+    private String authorRegion;
 
     @Column(nullable = false)
-    private Integer author_age;
+    private Integer authorAge;
 
     @Column(nullable = false, length = 100)
-    private String user_id;
+    private String userId;
 
     @Column(nullable = false, length = 2000)
-    private String post_content;
+    private String postContent;
 
     @Column(nullable = false, length = 100)
-    private String user_preference;
+    private String userPreference;
 
-    @Column(nullable = false, length = 1)
-    private String author_gender;
+    @Column(nullable = false, length = 10)
+    private String authorGender;
 
     @Column(nullable = false)
     private Integer amount;

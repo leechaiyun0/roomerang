@@ -1,17 +1,18 @@
 package com.roomerang.contoller;
 
 import com.roomerang.entity.Post;
+import com.roomerang.entity.User;
 import com.roomerang.service.PostService;
+import com.roomerang.util.SessionConst;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 
 @Controller
@@ -23,7 +24,6 @@ public class PostController {
     public PostController(PostService postService) {
         this.postService = postService;
     }
-
 
     @GetMapping("/")
     public String defaultPageRedirect() {
@@ -54,7 +54,7 @@ public class PostController {
         return "match/noRoomList";
     }
 
-    //글 작성 페이지 이동
+    //글 작성
     @GetMapping("/post/create")
     public String createPostForm(Model model) {
         model.addAttribute("post", new Post());
@@ -63,76 +63,91 @@ public class PostController {
 
     //글 저장
     @PostMapping("/post/save")
-    public String savePost(@RequestParam("rm_board_title") String rmBoardTitle,
-                           @RequestParam("post_content") String postContent,
-                           @RequestParam("amount") Integer amount,
-                           @RequestParam("deposit") Integer deposit,
-                           @RequestParam("author_region") String authorRegion,
+    public String savePost(@RequestParam("rmBoardTitle") String rmBoardTitle,
+                           @RequestParam("postContent") String postContent,
+                           @RequestParam("authorRegion") String authorRegion,
                            @RequestParam("category") String category,
-                           @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) {
+                           @RequestParam(value = "amount", required = false) Integer amount,
+                           @RequestParam(value = "deposit", required = false) Integer deposit,
+                           HttpServletRequest request) {
+        // 세션에서 로그인한 사용자 가져오기
+        HttpSession session = request.getSession(false);
+        User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
 
-        Post post = new Post();
-        post.setRm_board_title(rmBoardTitle);
-        post.setPost_content(postContent);
-        post.setAmount(amount != null ? amount : 0);
-        post.setDeposit(deposit != null ? deposit : 0);
-        post.setAuthor_region(authorRegion);
-        post.setCategory(category);
-        post.setPostDate(LocalDateTime.now());
-        post.setPost_views(0);
-
-        // 로그인 기능이 없으므로 임시 값
-        post.setAuthor_age(25);
-        post.setAuthor_name("테스트 사용자");
-        post.setAuthor_gender("M");
-        post.setUser_id("testUser"); // 임시 ID
-        post.setUser_preference("default");
-
-        // 파일 업로드 처리
-        if (photoFile != null && !photoFile.isEmpty()) {
-            try {
-                String uploadDir = "C:/uploads/";
-                File dir = new File(uploadDir);
-                if (!dir.exists()) dir.mkdirs();
-
-                String originalFilename = photoFile.getOriginalFilename();
-                String filePath = uploadDir + originalFilename;
-                photoFile.transferTo(new File(filePath));
-
-                post.setPhotoUrl("/uploads/" + originalFilename);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        if (loginUser == null) {
+            return "redirect:/auth/login"; // 로그인하지 않았다면 로그인 페이지로 이동
         }
 
-        // 데이터베이스에 저장
-        postService.savePost(post);
+        Post post = new Post();
+        post.setRmBoardTitle(rmBoardTitle);
+        post.setPostContent(postContent);
+        post.setAuthorRegion(authorRegion);
+        post.setCategory(category);
+        post.setPostDate(LocalDateTime.now());
+        post.setPostViews(0);
 
-        return category.equals("방 있음") ? "redirect:/board/rooms" : "redirect:/board/no-rooms";
+        // 로그인한 사용자 정보 저장
+        post.setAuthorAge(25); // 나이 데이터 추가 필요
+        post.setAuthorName(loginUser.getName()); // 로그인한 사용자의 이름
+        post.setAuthorGender(loginUser.getGender().toString()); // 성별 (MALE, FEMALE)
+        post.setUserId(loginUser.getUsername()); // 로그인한 사용자의 ID
+        post.setUserPreference("default");
+
+        // 방 있음인 경우만 금액과 보증금 설정
+        if ("방 있음".equals(category)) {
+            post.setAmount(amount != null ? amount : 0);
+            post.setDeposit(deposit != null ? deposit : 0);
+        } else {
+            post.setAmount(0);
+            post.setDeposit(0);
+        }
+
+        postService.savePost(post);
+        return "redirect:/board/" + (category.equals("방 있음") ? "rooms" : "no-rooms");
     }
 
     //글 조회 (방 있음 || 방 없음)
     @GetMapping("/post/{id}")
-    public String viewPost(@PathVariable("id") Long id, Model model) {
+    public String viewPost(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
         Post post = postService.getPostById(id);
         if (post == null) {
             return "redirect:/board/rooms";
         }
 
         // 조회수 증가
-        post.setPost_views(post.getPost_views() + 1);
+        post.setPostViews(post.getPostViews() + 1);
         postService.savePost(post);
 
+        // 현재 로그인한 사용자 가져오기
+        HttpSession session = request.getSession(false);
+        User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
+
+        if (loginUser != null) {
+            System.out.println("로그인한 사용자 ID: " + loginUser.getUsername());
+            System.out.println("게시글 작성자 ID: " + post.getUserId());
+        } else {
+            System.out.println("로그인한 사용자가 없음");
+        }
+
         model.addAttribute("post", post);
+        model.addAttribute("loginUser", loginUser); // 모델에 추가하여 HTML에서 비교 가능하도록 설정
 
         return "방 있음".equals(post.getCategory()) ? "match/roomView" : "match/noRoomView";
     }
 
-    //글 수정 페이지 이동 (본인이 작성한 글만 수정 가능)
+
+    //글 수정
     @GetMapping("/post/edit/{id}")
-    public String editPost(@PathVariable("id") Long id, Model model) {
+    public String editPost(@PathVariable("id") Long id, Model model, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
+
+        if (loginUser == null) {
+            return "redirect:/auth/login"; // 로그인하지 않았다면 로그인 페이지로 이동
+        }
+
         Post post = postService.getPostById(id);
-        if (post == null || !"testUser".equals(post.getUser_id())) {
+        if (post == null || !post.getUserId().equals(loginUser.getUsername())) {
             return "redirect:/board/rooms"; // 본인 글이 아니면 목록으로 리다이렉트
         }
 
@@ -140,64 +155,87 @@ public class PostController {
         return "match/postModify";
     }
 
-    //글 수정 요청 처리
+
+    // 글 수정 요청 처리
     @PostMapping("/post/update")
     public String updatePost(@RequestParam("id") Long id,
-                             @RequestParam("rm_board_title") String rmBoardTitle,
-                             @RequestParam("post_content") String postContent,
-                             @RequestParam("author_region") String authorRegion,
+                             @RequestParam("rmBoardTitle") String rmBoardTitle,
+                             @RequestParam("postContent") String postContent,
+                             @RequestParam("authorRegion") String authorRegion,
                              @RequestParam("category") String category,
                              @RequestParam(value = "amount", required = false) Integer amount,
                              @RequestParam(value = "deposit", required = false) Integer deposit,
-                             @RequestParam(value = "photoFile", required = false) MultipartFile photoFile) {
+                             HttpServletRequest request) {
+
+        HttpSession session = request.getSession(false);
+        User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
+
+        if (loginUser == null) {
+            return "redirect:/auth/login"; // 로그인하지 않았다면 로그인 페이지로 이동
+        }
 
         Post post = postService.getPostById(id);
-        if (post == null || !"testUser".equals(post.getUser_id())) {
+        if (post == null || !post.getUserId().equals(loginUser.getUsername())) {
             return "redirect:/board/rooms";
         }
 
-        post.setRm_board_title(rmBoardTitle);
-        post.setPost_content(postContent);
-        post.setAuthor_region(authorRegion);
+        post.setRmBoardTitle(rmBoardTitle);
+        post.setPostContent(postContent);
+        post.setAuthorRegion(authorRegion);
         post.setCategory(category);
 
-        //방 있음일 경우만 금액, 보증금 처리
         if ("방 있음".equals(category)) {
             post.setAmount(amount != null ? amount : 0);
             post.setDeposit(deposit != null ? deposit : 0);
+        } else {
+            post.setAmount(0);
+            post.setDeposit(0);
         }
 
-        //이미지 파일 업로드 안됨 수정 필요
-        if (photoFile != null && !photoFile.isEmpty()) {
-            try {
-                String uploadDir = "C:/uploads/";
-                File dir = new File(uploadDir);
-                if (!dir.exists()) dir.mkdirs();
-
-                String originalFilename = photoFile.getOriginalFilename();
-                String filePath = uploadDir + originalFilename;
-                photoFile.transferTo(new File(filePath));
-
-                post.setPhotoUrl("/uploads/" + originalFilename);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        //수정된 내용 저장
         postService.savePost(post);
-
         return "redirect:/board/post/" + id;
     }
-    // 글 삭제 (임시 사용자 "testUser"만 삭제 가능)
+
+    //글 삭제
     @PostMapping("/post/delete/{id}")
-    public String deletePost(@PathVariable("id") Long id) {
+    public String deletePost(@PathVariable("id") Long id, HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
+
+        if (loginUser == null) {
+            return "redirect:/auth/login"; // 로그인하지 않았다면 로그인 페이지로 이동
+        }
+
         Post post = postService.getPostById(id);
-        if (post != null && "testUser".equals(post.getUser_id())) {
+        if (post != null && post.getUserId().equals(loginUser.getUsername())) {
             postService.deletePost(id);
         }
-        // 카테고리에 따라 목록 페이지로 이동
+
         return (post != null && "방 있음".equals(post.getCategory())) ? "redirect:/board/rooms" : "redirect:/board/no-rooms";
     }
-}
 
+
+    //검색 기능
+    @GetMapping("/search")
+    public String searchPosts(@RequestParam(name = "category") String category,
+                              @RequestParam(name = "keyword", required = false) String keyword,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "size", defaultValue = "10") int size,
+                              Model model) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Post> postsPage;
+
+        if (keyword == null || keyword.trim().isEmpty()) {
+            postsPage = postService.getPostsByCategory(category, pageable);
+        } else {
+            postsPage = postService.searchPostsByCategory(category, keyword, pageable);
+        }
+
+        model.addAttribute("postsPage", postsPage);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("category", category);
+
+
+        return category.equals("방 있음") ? "match/roomList" : "match/noRoomList";
+    }
+}
