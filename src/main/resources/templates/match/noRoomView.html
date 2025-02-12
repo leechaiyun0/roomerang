@@ -21,6 +21,8 @@
 
 <a href="/board/no-rooms">목록으로</a>
 
+<img th:src="@{/images/binH.png}" alt="찜" class="wishList">
+
 <form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post">
     <button type="submit">삭제</button>
 </form>

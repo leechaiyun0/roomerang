@@ -2,10 +2,248 @@
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>방 없음 목록</title>
+
+  <!-- ✅ 스타일 추가 -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #F8F9FA;
+    }
+
+    /* ✅ 네비게이션 바 스타일 */
+    .navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: white;
+      padding: 20px 50px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .logo img {
+      height: 60px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      flex-grow: 1;
+      gap: 50px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #777E90;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .nav-links a:hover {
+      color: #505D96;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 35px;
+    }
+
+    .icons img {
+      width: 30px;
+      cursor: pointer;
+    }
+
+    .user-menu {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .user-menu img {
+      width: 20px;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 40px;
+      background-color: white;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+      min-width: 150px;
+      z-index: 10;
+    }
+
+    .dropdown-content a {
+      display: block;
+      padding: 10px;
+      text-decoration: none;
+      color: #777E90;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f1f1f1;
+    }
+
+    /* ✅ 방 없음 목록 스타일 */
+    h1 {
+      text-align: center;
+      margin-top: 40px;
+      color: #505D96;
+    }
+
+    form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      width: 250px;
+      border: 2px solid #505D96;
+      border-radius: 5px;
+      margin-right: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #505D96;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #3A4A7A;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+    }
+
+    table, th, td {
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 15px;
+      text-align: center;
+    }
+
+    th {
+      background-color: #505D96;
+      color: white;
+    }
+
+    td {
+      background-color: white;
+    }
+
+    /* ✅ 페이징 스타일 */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    .pagination a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #505D96;
+      font-weight: bold;
+    }
+
+    .pagination a:hover {
+      text-decoration: underline;
+    }
+
+    /* ✅ 글 등록 버튼 스타일 */
+    .write-button {
+      display: block;
+      width: 150px;
+      margin: 30px auto;
+      padding: 15px 20px;
+      background-color: #505D96;
+      color: white;
+      text-align: center;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .write-button:hover {
+      background-color: #3A4A7A;
+      transform: translateY(-2px);
+    }
+
+    /* ✅ 카테고리 드롭다운 스타일 */
+    .category-select {
+      display: block;
+      width: 160px;
+      margin: 20px auto;
+      padding: 12px 15px;
+      border: 2px solid #505D96;
+      border-radius: 8px;
+      background-color: white;
+      color: #505D96;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s;
+    }
+
+    .category-select:hover {
+      border-color: #3A4A7A;
+    }
+
+  </style>
 </head>
 <body>
 
+<!-- ✅ 네비게이션 바 -->
+<div class="navbar">
+  <div class="logo">
+    <img th:src="@{/images/logo.png}" alt="룸메랑 로고">
+  </div>
+  <div class="nav-links">
+    <a th:href="@{/board/rooms}">매칭해방</a>
+    <a th:href="@{/share/list}">나눔해방</a>
+  </div>
+
+  <div class="header-right">
+    <div class="icons">
+      <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
+      <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
+      <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
+    </div>
+
+    <div class="user-menu">
+      <!-- 로그인하지 않았을 때 -->
+      <a th:if="${loginUser == null}" th:href="@{/auth/login}" class="username-link">로그인 해주세요</a>
+
+      <!-- 로그인한 사용자일 때 -->
+      <span th:if="${loginUser != null}" th:text="|${loginUser.name}님|" class="username"></span>
+    </div>
+  </div>
+</div>
+
+<!-- ✅ 방 없음 목록 -->
 <h1>방 없음 목록</h1>
 <form th:action="@{/board/search}" method="get">
   <input type="hidden" name="category" value="방 없음">
@@ -13,7 +251,7 @@
   <button type="submit">검색</button>
 </form>
 
-<table border="1">
+<table>
   <tr>
     <th>제목</th>
     <th>작성자</th>
@@ -22,7 +260,6 @@
     <th>지역</th>
   </tr>
   <tr th:each="post : ${postsPage.content}">
-    <!-- 제목을 클릭하면 해당 글의 상세 페이지로 이동 -->
     <td><a th:href="@{/board/post/{id}(id=${post.rmPostId})}" th:text="${post.rmBoardTitle}"></a></td>
     <td th:text="${post.authorName}"></td>
     <td th:text="${post.postViews}"></td>
@@ -32,7 +269,7 @@
 </table>
 
 <!-- 페이징 -->
-<div>
+<div class="pagination">
   <a th:if="${postsPage.hasPrevious()}" th:href="@{/board/no-rooms(page=${postsPage.number - 1}, size=${postsPage.size})}">이전</a>
   <span th:text="${postsPage.number + 1}"></span> / <span th:text="${postsPage.totalPages}"></span>
   <a th:if="${postsPage.hasNext()}" th:href="@{/board/no-rooms(page=${postsPage.number + 1}, size=${postsPage.size})}">다음</a>
@@ -40,14 +277,14 @@
 
 <!-- 카테고리 선택 -->
 <form>
-  <select onchange="location = this.value;">
+  <select class="category-select" onchange="location = this.value;">
     <option value="/board/no-rooms" selected>방 없음</option>
     <option value="/board/rooms">방 있음</option>
   </select>
 </form>
 
 <!-- 글 등록 버튼 -->
-<a th:href="@{/board/post/create}">글 등록</a>
+<a th:href="@{/board/post/create}" class="write-button">글 등록</a>
 
 </body>
 </html>
