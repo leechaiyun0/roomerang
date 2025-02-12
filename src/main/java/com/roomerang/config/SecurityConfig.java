@@ -32,7 +32,7 @@ public class SecurityConfig {
                 // CSRF 보호 비활성화 (stateless API인 경우)
                 .csrf(AbstractHttpConfigurer::disable)
                 // 세션을 사용하지 않음 (JWT를 사용할 경우)
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 // URL 별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()

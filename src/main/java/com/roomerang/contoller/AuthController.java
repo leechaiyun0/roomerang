@@ -13,6 +13,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -73,7 +76,9 @@ public class AuthController {
 
     // [로그인] - POST 요청 : 아이디, 비밀번호 검증 후 로그인 처리
     @PostMapping("/login")
-    public String login(@Validated @ModelAttribute ("loginForm") UserLoginRequest userLoginRequest, BindingResult bindingResult, HttpServletRequest request) {
+    public String login(@Validated @ModelAttribute ("loginForm") UserLoginRequest userLoginRequest,
+                        BindingResult bindingResult,
+                        HttpServletRequest request) {
         if (bindingResult.hasErrors()) {
             log.info("[Login] errors={}", bindingResult);
             return "auth/login";
@@ -86,12 +91,28 @@ public class AuthController {
             return "auth/login";
         }
 
-        log.info("로그인 성공");
+        loginUserSession(loginUser);
+
         HttpSession session = request.getSession();
         session.setAttribute(SessionConst.LOGIN_USER, loginUser);
 
         return "redirect:/";
     }
+
+    // ✅ 로그인 정보를 SecurityContext에 저장하는 메서드 추가
+    private void loginUserSession(User loginUser) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(loginUser.getUsername())
+                .password(loginUser.getPassword()) // 비밀번호는 사용되지 않음
+                .roles("USER") // 🔹 필요 시 ROLE 추가 가능
+                .build();
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        log.info("✅ SecurityContext에 사용자 저장 완료! " + loginUser.getUsername());
+    }
+
 
     @PostMapping("/logout")
     public String logout(HttpServletRequest request) {

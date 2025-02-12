@@ -7,6 +7,7 @@ import com.roomerang.entity.User;
 import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
     void validatePassword(String password, String confirmPassword, BindingResult bindingResult);
@@ -18,4 +19,5 @@ public interface UserService {
     boolean verifySecurityAnswerById(Long userId, String securityAnswer);
     String revealUsername(Long userId);
     boolean resetPassword(String username, String newPassword);
+    Optional<User> findByUsername(String username);
 }

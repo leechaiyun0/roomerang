@@ -6,6 +6,9 @@ import com.roomerang.dto.response.UserFindResponse;
 import com.roomerang.entity.User;
 import com.roomerang.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
@@ -22,6 +25,11 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @Override
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
     @Override
     public void validatePassword(String password, String confirmPassword, BindingResult bindingResult) {
@@ -50,10 +58,30 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User login(String username, String rawPassword) {
-        return userRepository.findByUsername(username)
-                .filter(user -> passwordEncoder.matches(rawPassword, user.getPassword()))
+        User user = userRepository.findByUsername(username)
+                .filter(u -> passwordEncoder.matches(rawPassword, u.getPassword()))
                 .orElse(null);
+
+        if (user != null) {
+            loginUserSession(user); // ✅ 로그인 성공 시 SecurityContext에 저장
+        }
+
+        return user;
     }
+
+    private void loginUserSession(User loginUser) {
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.withUsername(loginUser.getUsername())
+                .password(loginUser.getPassword()) // 비밀번호는 사용되지 않음
+                .roles("USER") // 🔹 필요 시 ROLE 추가 가능
+                .build();
+
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        System.out.println("✅ 로그인 성공: SecurityContext에 사용자 저장 완료! " + loginUser.getUsername());
+    }
+
 
     @Override
     public List<UserFindResponse> findMaskedUsersAndSecurityQuestion(UserFindRequest userFindRequest) {

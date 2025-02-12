@@ -159,7 +159,7 @@
     <a href="/share/list" class="btn-custom btn-secondary">목록으로</a>
 
     <!-- 글 작성자일 때만 수정/삭제 가능 -->
-    <div th:if="${post.userId == 'testUser'}">
+    <div th:if="${loginUser != null and post.userId == loginUser.username}">
       <a th:href="@{/share/{id}/update(id=${post.txnPostId})}" class="btn-custom">수정</a>
       <form th:action="@{/share/{id}/delete(id=${post.txnPostId})}" method="post"
             onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
