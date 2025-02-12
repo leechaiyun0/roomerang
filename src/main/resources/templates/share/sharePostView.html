@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>게시글 상세 보기</title>
+</head>
+<body>
+
+<div>
+
+  <!-- 이미지 + 게시글 정보 -->
+  <div class="post-container">
+    <div class="image-container" th:if="${post.photoUrl != null and not #strings.isEmpty(post.photoUrl)}">
+      <img th:src="@{${post.photoUrl}}" alt="첨부 이미지">
+    </div>
+
+    <div class="info-box">
+      <h1 class="post-title" th:text="${post.txnBoardTitle}"></h1>
+
+      <div class="info-header">
+        <strong>작성자:</strong> <span th:text="${post.authorName}"></span> |
+        <strong>조회수:</strong> <span th:text="${post.viewCount}"></span> |
+        <strong>등록 날짜:</strong> <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd')}"></span> |
+        <strong>지역:</strong> <span th:text="${post.location}"></span>
+      </div>
+
+      <!-- 가격 박스 -->
+      <div class="price-box">
+        <p><span style="font-size: 20px;">가격:</span> <span th:text="${post.price}"></span> 원</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 게시글 내용 -->
+  <div class="post-content">
+    <p th:text="${post.txnBoardContent}"></p>
+  </div>
+
+  <!-- 버튼 그룹 -->
+  <div class="btn-group">
+    <a href="/share/list" class="btn-custom btn-secondary">목록으로</a>
+
+    <!-- 글 작성자일 때만 수정/삭제 가능 -->
+    <div th:if="${loginUser != null and post.userId == loginUser.username}">
+      <a th:href="@{/share/{id}/update(id=${post.txnPostId})}" class="btn-custom">수정</a>
+      <form th:action="@{/share/{id}/delete(id=${post.txnPostId})}" method="post"
+            onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
+        <button type="submit" class="btn-danger">삭제</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

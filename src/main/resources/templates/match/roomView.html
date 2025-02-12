@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>글 상세 조회</title>
+</head>
+<body>
+<h1 th:text="${post.rmBoardTitle}"></h1>
+<p>작성자: <span th:text="${post.authorName}"></span></p>
+<p>조회수: <span th:text="${post.postViews}"></span></p>
+<p>등록 날짜: <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+<p>지역: <span th:text="${post.authorRegion}"></span></p>
+<p>금액: <span th:text="${post.amount}"></span> 만원</p>
+<p>보증금: <span th:text="${post.deposit}"></span> 만원</p>
+<p>내용:</p>
+<pre th:text="${post.postContent}"></pre>
+
+<!-- 로그인한 사용자의 userId와 게시글 작성자의 userId가 같을 때만 수정 버튼 표시 -->
+<th:block th:if="${loginUser != null and loginUser.username == post.userId}">
+    <a th:href="@{/board/post/edit/{id}(id=${post.rmPostId})}" class="btn btn-primary">수정</a>
+</th:block>
+
+
+<!-- 로그인한 사용자의 userId와 게시글 작성자의 userId가 같을 때만 수정 버튼 표시 -->
+<th:block th:if="${loginUser != null and loginUser.username == post.userId}">
+    <a th:href="@{/board/post/edit/{id}(id=${post.rmPostId})}" class="btn btn-primary">수정</a>
+</th:block>
+
+
+
+<a href="/board/rooms">목록</a>
+
+<form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post">
+    <button type="submit">삭제</button>
+</form>
+
+</body>
+</html>

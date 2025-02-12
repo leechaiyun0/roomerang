@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>나눔해방 게시판</title>
+</head>
+<body>
+
+<div>
+    <h1>나눔해방 게시판</h1>
+
+    <!-- ✅ 검색 & 글쓰기 -->
+    <div class="search-container">
+        <form th:action="@{/share/search}" method="get">
+            <input type="text" name="keyword" placeholder="검색어 입력" class="search-box">
+            <button type="submit" class="btn-custom">검색</button>
+        </form>
+        <a th:href="@{/share/create}" class="btn-custom">게시글 작성</a>
+    </div>
+
+    <!-- ✅ 게시글 목록 -->
+    <table class="post-table">
+        <tr>
+            <th>제목</th>
+            <th>사진</th>
+            <th>가격</th>
+            <th>위치</th>
+        </tr>
+        <tr th:each="post : ${posts}">
+            <td><a th:href="@{/share/{id}(id=${post.txnPostId})}" th:text="${post.txnBoardTitle}"></a></td>
+            <td><img th:src="${post.photoUrl}" alt="이미지 없음"></td>
+            <td th:text="${post.price} + ' 원'"></td>
+            <td th:text="${post.location}"></td>
+        </tr>
+    </table>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const userMenu = document.querySelector(".toggle-button");
+        const dropdown = document.querySelector(".dropdown-content");
+
+        if (userMenu && dropdown) {
+            userMenu.addEventListener("click", function(event) {
+                event.stopPropagation();
+                dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+            });
+
+            document.addEventListener("click", function(event) {
+                if (!userMenu.contains(event.target)) {
+                    dropdown.style.display = "none";
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

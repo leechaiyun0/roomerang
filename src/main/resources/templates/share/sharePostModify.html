@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>게시글 수정</title>
+</head>
+<body>
+
+<div>
+    <h1>게시글 수정</h1>
+
+    <form th:action="@{/share/{id}/update(id=${post.txnPostId})}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="title">제목:</label>
+            <input type="text" id="title" name="txnBoardTitle" th:value="${post.txnBoardTitle}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="content">내용:</label>
+            <textarea id="content" name="txnBoardContent" required th:text="${post.txnBoardContent}"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="photo">사진:</label>
+            <input type="file" id="photo" name="photo" accept="image/*">
+        </div>
+
+        <!-- 기존 이미지 미리보기 -->
+        <div class="image-preview" th:if="${post.photoUrl != null}">
+            <img th:src="${post.photoUrl}" alt="이미지 미리보기" width="200">
+        </div>
+
+        <div class="form-group">
+            <label for="price">금액:</label>
+            <input type="number" id="price" name="price" step="0.01" th:value="${post.price}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="location">지역:</label>
+            <select id="location" name="location" required>
+                <option value="">지역을 선택하세요</option>
+                <option value="두정동" th:selected="${post.location == '두정동'}">두정동</option>
+                <option value="쌍용동" th:selected="${post.location == '쌍용동'}">쌍용동</option>
+                <option value="성정동" th:selected="${post.location == '성정동'}">성정동</option>
+                <option value="신부동" th:selected="${post.location == '신부동'}">신부동</option>
+                <option value="백석동" th:selected="${post.location == '백석동'}">백석동</option>
+                <option value="불당동" th:selected="${post.location == '불당동'}">불당동</option>
+                <option value="원성동" th:selected="${post.location == '원성동'}">원성동</option>
+                <option value="용곡동" th:selected="${post.location == '용곡동'}">용곡동</option>
+                <option value="청수동" th:selected="${post.location == '청수동'}">청수동</option>
+                <option value="신방동" th:selected="${post.location == '신방동'}">신방동</option>
+                <option value="구성동" th:selected="${post.location == '구성동'}">구성동</option>
+                <option value="중앙동" th:selected="${post.location == '중앙동'}">중앙동</option>
+                <option value="문성동" th:selected="${post.location == '문성동'}">문성동</option>
+                <option value="목천읍" th:selected="${post.location == '목천읍'}">목천읍</option>
+                <option value="성환읍" th:selected="${post.location == '성환읍'}">성환읍</option>
+                <option value="병천면" th:selected="${post.location == '병천면'}">병천면</option>
+                <option value="광덕면" th:selected="${post.location == '광덕면'}">광덕면</option>
+                <option value="동남동" th:selected="${post.location == '동남동'}">동남동</option>
+                <option value="서북동" th:selected="${post.location == '서북동'}">서북동</option>
+                <option value="업성동" th:selected="${post.location == '업성동'}">업성동</option>
+            </select>
+
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn-custom">수정</button>
+            <button type="button" class="btn-custom btn-secondary" onclick="location.href='/share/list'">목록으로</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
