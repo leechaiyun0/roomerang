@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>방 있음 상세 조회</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #F8F9FA;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 1000px;
+            margin: auto;
+            margin-top: 20px;
+        }
+
+        .post-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 30px;
+        }
+
+        .info-box {
+            flex-grow: 1;
+        }
+
+        .post-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .post-info {
+            color: #777;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .highlight-box {
+            background: #EEF1F9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 22px;
+            font-weight: bold;
+            color: #505D96;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .image-container {
+            width: 40%;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .image-container img {
+            width: 100%;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border: 3px solid #505D96;
+        }
+
+        .post-text {
+            background: #EDF2F7;
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 16px;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            min-height: 200px;
+            margin-top: 20px;
+        }
+
+        .btn-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .btn-custom {
+            background-color: #505D96;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: bold;
+            border: none;
+        }
+
+        .btn-custom:hover {
+            background-color: #424C7D;
+        }
+
+        .btn-danger {
+            background-color: #DC3545;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .btn-danger:hover {
+            background-color: #C82333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="post-container">
+        <!-- 게시글 정보 -->
+        <div class="info-box">
+            <h1 class="post-title" th:text="${post.rm_board_title}"></h1>
+
+            <div class="post-info">
+                <b>작성자:</b> <span th:text="${post.author_name}"></span> |
+                <b>조회수:</b> <span th:text="${post.post_views}"></span> |
+                <b>등록 날짜:</b> <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span> |
+                <b>지역:</b> <span th:text="${post.author_region}"></span>
+            </div>
+
+            <!-- 월세 / 보증금 강조 -->
+            <div class="highlight-box">
+                <p><span style="font-size: 20px;">월세:</span> <span th:text="${post.amount}"></span> 만원</p>
+                <p><span style="font-size: 20px;">보증금:</span> <span th:text="${post.deposit}"></span> 만원</p>
+            </div>
+        </div>
+
+        <!-- 이미지 -->
+        <div class="image-container" th:if="${post.photoUrl != null and not #strings.isEmpty(post.photoUrl)}">
+            <img th:src="@{${post.photoUrl}}" alt="첨부 이미지">
+        </div>
+    </div>
+
+    <!-- 게시글 내용 -->
+    <div class="post-text">
+        <p th:text="${post.post_content}"></p>
+    </div>
+
+    <!-- 버튼 그룹 -->
+    <div class="btn-group">
+        <a href="/board/rooms" class="btn-custom">목록으로</a>
+
+        <!-- 글 작성자일 때만 수정 가능 -->
+        <a th:if="${post.user_id == 'testUser'}" th:href="@{/board/post/edit/{id}(id=${post.rm_Post_Id})}" class="btn-custom">수정</a>
+
+        <!-- 삭제 버튼 -->
+        <form th:action="@{/board/post/delete/{id}(id=${post.rm_Post_Id})}" method="post" onsubmit="return confirm('정말 삭제하시겠습니까?');">
+            <button type="submit" class="btn-danger">삭제</button>
+        </form>
+    </div>
+
+</div>
+
+</body>
+</html>
