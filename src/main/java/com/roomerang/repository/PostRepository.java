@@ -12,4 +12,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     //최신순 정렬 적용
     Page<Post> findByCategoryOrderByPostDateDesc(String category, Pageable pageable);
     Optional<Post> findById(Long id);
+    Page<Post> findByCategoryAndRmBoardTitleContainingOrCategoryAndAuthorNameContainingOrderByPostDateDesc(
+            String category1, String title, String category2, String author, Pageable pageable);
 }

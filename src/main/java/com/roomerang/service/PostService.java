@@ -19,7 +19,6 @@ public class PostService {
         this.postRepository = postRepository;
     }
 
-    //최신순 정렬 적용
     public Page<Post> getPostsByCategory(String category, Pageable pageable) {
         return postRepository.findByCategoryOrderByPostDateDesc(category, pageable);
     }
@@ -32,10 +31,27 @@ public class PostService {
     public Post getPostById(Long id) {
         return postRepository.findById(id).orElse(null);
     }
+
     @Transactional
     public void deletePost(Long id) {
         postRepository.deleteById(id);
     }
 
+    public Page<Post> searchPostsByCategory(String category, String keyword, Pageable pageable) {
+        return postRepository.findByCategoryAndRmBoardTitleContainingOrCategoryAndAuthorNameContainingOrderByPostDateDesc(
+                category, keyword, category, keyword, pageable);
+    }
 
+    public void savePostWithCategory(Post post, String category) {
+        if ("방 있음".equals(category)) {
+            if (post.getAmount() == null) post.setAmount(0);
+            if (post.getDeposit() == null) post.setDeposit(0);
+        } else {
+            post.setAmount(0);
+            post.setDeposit(0);
+            post.setPhotoUrl(null);
+        }
+        postRepository.save(post);
+    }
 }
+
