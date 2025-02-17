@@ -1,5 +1,5 @@
 package com.roomerang.util;
 
 public abstract class SessionConst {
-    public static final String LOGIN_USER = "login_user";
+    public static final String LOGIN_USER = "loginUser";
 }

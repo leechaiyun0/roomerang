@@ -263,7 +263,6 @@
             <span th:if="${loginUser != null}" th:text="|${loginUser.name}님|" class="username"></span>
 
             <!-- 로그인하지 않았을 때 -->
-            <!-- 로그인하지 않았을 때 -->
             <a th:if="${loginUser == null}" th:href="@{/auth/login}" class="username-link">로그인 해주세요</a>
 
             <div class="dropdown-content">
