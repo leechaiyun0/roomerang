@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -25,10 +27,10 @@ public class Post {
     private String authorName;
 
     @Column(nullable = false)
-    private LocalDateTime postDate;
+    private LocalDateTime postDate = LocalDateTime.now();
 
     @Column(nullable = false)
-    private Integer postViews;
+    private Integer postViews = 0;
 
     @Column(nullable = false, length = 200)
     private String authorRegion;
@@ -43,20 +45,22 @@ public class Post {
     private String postContent;
 
     @Column(nullable = false, length = 100)
-    private String userPreference;
+    private String userPreference = "일반";
 
     @Column(nullable = false, length = 10)
     private String authorGender;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private Integer amount;
 
     @Column(nullable = false)
     private Integer deposit;
 
-    @Column(nullable = true, length = 500)
-    private String photoUrl;
+    @ElementCollection
+    @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
+    @Column(name = "photo_url", length = 500)
+    private List<String> photoUrls = new ArrayList<>();
 
     @Column(nullable = false, length = 50)
-    private String category; // 방 있음 / 방 없음
+    private String category;
 }

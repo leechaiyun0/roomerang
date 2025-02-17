@@ -15,7 +15,7 @@
 
 <h1>글 등록</h1>
 
-<form th:action="@{/board/post/save}" method="post">
+<form th:action="@{/board/post/save}" method="post" enctype="multipart/form-data">
     <label>제목: <input type="text" name="rmBoardTitle" required></label><br>
     <label>내용: <textarea name="postContent" required></textarea>
 
@@ -50,6 +50,9 @@
             <option value="방 없음">방 없음</option>
         </select>
     </label><br>
+
+    <label for="photos">사진 업로드:</label>
+    <input type="file" id="photos" name="photos" accept="image/*" multiple>
 
     <div id="extraFields" style="display:none;">
         <label>금액: <input type="number" name="amount"></label><br>

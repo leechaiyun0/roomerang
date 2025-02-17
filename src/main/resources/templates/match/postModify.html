@@ -33,53 +33,64 @@
     </select>
   </label><br>
 
-  <!-- 방 있음일 경우에만 금액, 보증금, 사진 업로드 보이게 -->
+  <!-- 방 있음일 경우에만 금액, 보증금 입력란 표시 -->
   <div id="extraFields" th:style="${post.category == '방 있음'} ? 'display:block;' : 'display:none;'">
     <label>금액: <input type="number" name="amount" th:value="${post.amount}"></label><br>
     <label>보증금: <input type="number" name="deposit" th:value="${post.deposit}"></label><br>
   </div>
 
-  <label for="authorRegion">지역:<input type="text" name="authorRegion" th:value="${post.authorRegion}" required></label>
+  <!-- 지역 선택 -->
+  <label for="authorRegion">지역:</label>
   <select name="authorRegion" id="authorRegion" required>
     <option value="">지역을 선택하세요</option>
-    <option value="두정동">두정동</option>
-    <option value="쌍용동">쌍용동</option>
-    <option value="성정동">성정동</option>
-    <option value="신부동">신부동</option>
-    <option value="백석동">백석동</option>
-    <option value="불당동">불당동</option>
-    <option value="원성동">원성동</option>
-    <option value="용곡동">용곡동</option>
-    <option value="청수동">청수동</option>
-    <option value="신방동">신방동</option>
-    <option value="구성동">구성동</option>
-    <option value="중앙동">중앙동</option>
-    <option value="문성동">문성동</option>
-    <option value="목천읍">목천읍</option>
-    <option value="성환읍">성환읍</option>
-    <option value="병천면">병천면</option>
-    <option value="광덕면">광덕면</option>
-    <option value="업성동">업성동</option>
-    <option value="청당동">청당동</option>
+    <option value="두정동" th:selected="${post.authorRegion == '두정동'}">두정동</option>
+    <option value="쌍용동" th:selected="${post.authorRegion == '쌍용동'}">쌍용동</option>
+    <option value="성정동" th:selected="${post.authorRegion == '성정동'}">성정동</option>
+    <option value="신부동" th:selected="${post.authorRegion == '신부동'}">신부동</option>
+    <option value="백석동" th:selected="${post.authorRegion == '백석동'}">백석동</option>
+    <option value="불당동" th:selected="${post.authorRegion == '불당동'}">불당동</option>
+    <option value="원성동" th:selected="${post.authorRegion == '원성동'}">원성동</option>
+    <option value="용곡동" th:selected="${post.authorRegion == '용곡동'}">용곡동</option>
+    <option value="청수동" th:selected="${post.authorRegion == '청수동'}">청수동</option>
+    <option value="신방동" th:selected="${post.authorRegion == '신방동'}">신방동</option>
+    <option value="구성동" th:selected="${post.authorRegion == '구성동'}">구성동</option>
+    <option value="중앙동" th:selected="${post.authorRegion == '중앙동'}">중앙동</option>
+    <option value="문성동" th:selected="${post.authorRegion == '문성동'}">문성동</option>
+    <option value="목천읍" th:selected="${post.authorRegion == '목천읍'}">목천읍</option>
+    <option value="성환읍" th:selected="${post.authorRegion == '성환읍'}">성환읍</option>
+    <option value="병천면" th:selected="${post.authorRegion == '병천면'}">병천면</option>
+    <option value="광덕면" th:selected="${post.authorRegion == '광덕면'}">광덕면</option>
+    <option value="업성동" th:selected="${post.authorRegion == '업성동'}">업성동</option>
+    <option value="청당동" th:selected="${post.authorRegion == '청당동'}">청당동</option>
   </select>
+
+  <br><br>
+
+  <div>
+    <h3>현재 업로드된 사진</h3>
+    <th:block th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+      <div>
+        <th:block th:each="photoUrl, iterStat : ${post.photoUrls}">
+          <div>
+            <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="max-width: 200px; display: block;">
+            <label>
+              <input type="checkbox" name="deleteImages" th:value="${photoUrl}"> 삭제
+            </label>
+          </div>
+        </th:block>
+      </div>
+    </th:block>
+  </div>
+
+  <label for="newPhotos">새로운 사진 추가:</label>
+  <input type="file" id="newPhotos" name="newPhotos" accept="image/*" multiple>
+
+  <br><br>
+
   <button type="submit">수정 완료</button>
 </form>
 
 <a th:href="@{/board/post/{id}(id=${post.rmPostId})}">취소</a>
-
-<script>
-  function toggleFields() {
-    var category = document.getElementById("category").value;
-    var extraFields = document.getElementById("extraFields");
-
-    if (category === "방 있음") {
-      extraFields.style.display = "block";
-    } else {
-      extraFields.style.display = "none";
-    }
-  }
-  toggleFields(); // 페이지 로드 시 올바른 필드 표시
-</script>
 
 <script>
   toggleFields(); // 페이지 로드 시 올바른 필드 표시

@@ -20,6 +20,16 @@
     <a th:href="@{/board/post/edit/{id}(id=${post.rmPostId})}" class="btn btn-primary">수정</a>
 </th:block>
 
+
+<th:block th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+    <h3>첨부된 사진</h3>
+    <div>
+        <th:block th:each="photoUrl : ${post.photoUrls}">
+            <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="max-width: 300px; display: block; margin-bottom: 10px;">
+        </th:block>
+    </div>
+</th:block>
+
 <a href="/board/rooms">목록</a>
 
 <img th:src="@{/images/binH.png}" alt="찜" class="wishList">

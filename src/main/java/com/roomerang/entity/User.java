@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 @Data
 @AllArgsConstructor
@@ -48,5 +49,8 @@ public class User {
         this.securityQuestion = securityQuestion;
         this.securityAnswer = securityAnswer;
         this.password = password;
+    }
+    public int getAge() {
+        return Period.between(this.birthDate, LocalDate.now()).getYears();
     }
 }
