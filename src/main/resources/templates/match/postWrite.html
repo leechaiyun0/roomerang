@@ -3,6 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <title>글 등록</title>
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background-color: #F8F9FC;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #505D96;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d1d5db;
+            border-radius: 8px;
+            background-color: #EDF2F7;
+            font-size: 14px;
+            color: #333;
+            box-sizing: border-box;
+            margin-top: 5px;
+        }
+
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            border-color: #505D96;
+            outline: none;
+            box-shadow: 0 0 5px rgba(80, 93, 150, 0.5);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            height: 100px;
+        }
+
+        .form-group input[type="file"] {
+            background-color: white;
+            border: none;
+            padding: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background-color: #505D96;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+        }
+
+        button:hover {
+            background-color: #3A4A7A;
+        }
+
+        a {
+            display: block;
+            margin-top: 20px;
+            text-decoration: none;
+            color: #505D96;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
     <script>
         function toggleFields() {
             var category = document.getElementById("category").value;
@@ -13,56 +118,75 @@
 </head>
 <body>
 
-<h1>글 등록</h1>
+<div class="container">
+    <h1>글 등록</h1>
 
-<form th:action="@{/board/post/save}" method="post" enctype="multipart/form-data">
-    <label>제목: <input type="text" name="rmBoardTitle" required></label><br>
-    <label>내용: <textarea name="postContent" required></textarea>
+    <form th:action="@{/board/post/save}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="rmBoardTitle">제목</label>
+            <input type="text" id="rmBoardTitle" name="rmBoardTitle" required>
+        </div>
 
-    </label><br>
-    <label for="authorRegion">지역:</label>
-    <select name="authorRegion" id="authorRegion" required>
-        <option value="">지역을 선택하세요</option>
-        <option value="두정동">두정동</option>
-        <option value="쌍용동">쌍용동</option>
-        <option value="성정동">성정동</option>
-        <option value="신부동">신부동</option>
-        <option value="백석동">백석동</option>
-        <option value="불당동">불당동</option>
-        <option value="원성동">원성동</option>
-        <option value="용곡동">용곡동</option>
-        <option value="청수동">청수동</option>
-        <option value="신방동">신방동</option>
-        <option value="구성동">구성동</option>
-        <option value="중앙동">중앙동</option>
-        <option value="문성동">문성동</option>
-        <option value="목천읍">목천읍</option>
-        <option value="성환읍">성환읍</option>
-        <option value="병천면">병천면</option>
-        <option value="광덕면">광덕면</option>
-        <option value="업성동">업성동</option>
-        <option value="청당동">청당동</option>
-    </select>
+        <div class="form-group">
+            <label for="postContent">내용</label>
+            <textarea id="postContent" name="postContent" required></textarea>
+        </div>
 
-    <label>카테고리:
-        <select id="category" name="category" onchange="toggleFields()">
-            <option value="방 있음">방 있음</option>
-            <option value="방 없음">방 없음</option>
-        </select>
-    </label><br>
+        <div class="form-group">
+            <label for="authorRegion">지역</label>
+            <select id="authorRegion" name="authorRegion" required>
+                <option value="" selected>지역을 선택하세요</option>
+                <option value="두정동">두정동</option>
+                <option value="쌍용동">쌍용동</option>
+                <option value="성정동">성정동</option>
+                <option value="신부동">신부동</option>
+                <option value="백석동">백석동</option>
+                <option value="불당동">불당동</option>
+                <option value="원성동">원성동</option>
+                <option value="용곡동">용곡동</option>
+                <option value="청수동">청수동</option>
+                <option value="신방동">신방동</option>
+                <option value="구성동">구성동</option>
+                <option value="중앙동">중앙동</option>
+                <option value="문성동">문성동</option>
+                <option value="목천읍">목천읍</option>
+                <option value="성환읍">성환읍</option>
+                <option value="병천면">병천면</option>
+                <option value="광덕면">광덕면</option>
+                <option value="업성동">업성동</option>
+                <option value="청당동">청당동</option>
+            </select>
+        </div>
 
-    <label for="photos">사진 업로드:</label>
-    <input type="file" id="photos" name="photos" accept="image/*" multiple>
+        <div class="form-group">
+            <label for="category">카테고리</label>
+            <select id="category" name="category" onchange="toggleFields()">
+                <option value="방 있음">방 있음</option>
+                <option value="방 없음">방 없음</option>
+            </select>
+        </div>
 
-    <div id="extraFields" style="display:none;">
-        <label>금액: <input type="number" name="amount"></label><br>
-        <label>보증금: <input type="number" name="deposit"></label><br>
-    </div>
+        <div class="form-group">
+            <label for="photos">사진 업로드</label>
+            <input type="file" id="photos" name="photos" accept="image/*" multiple>
+        </div>
 
-    <button type="submit">등록</button>
-</form>
+        <div id="extraFields" style="display:none;">
+            <div class="form-group">
+                <label for="amount">금액</label>
+                <input type="number" id="amount" name="amount">
+            </div>
+            <div class="form-group">
+                <label for="deposit">보증금</label>
+                <input type="number" id="deposit" name="deposit">
+            </div>
+        </div>
 
-<a href="/board/rooms">목록</a>
+        <button type="submit">등록</button>
+    </form>
+
+    <a href="/board/rooms">목록으로 돌아가기</a>
+</div>
 
 <script>toggleFields();</script>
 

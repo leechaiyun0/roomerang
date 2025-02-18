@@ -6,14 +6,23 @@ import com.roomerang.service.PostService;
 import com.roomerang.util.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("/board")
@@ -34,9 +43,7 @@ public class PostController {
     @GetMapping("/rooms")
     public String listRooms(@RequestParam(name = "page", defaultValue = "0") int page,
                             @RequestParam(name = "size", defaultValue = "10") int size,
-                            Model model,
-                            HttpServletRequest request) {
-
+                            Model model, HttpServletRequest request) {
         // 세션에서 로그인한 사용자 정보 가져오기
         // 세션에서 사용자 정보 가져오기 (필요 시 생성)
         HttpSession session = request.getSession(true);
@@ -95,14 +102,16 @@ public class PostController {
         return "match/noRoomList";
     }
 
+
     //글 작성
     @GetMapping("/post/create")
     public String createPostForm(Model model) {
         model.addAttribute("post", new Post());
         return "match/postWrite";
     }
+    @Value("${file.upload-dir}")
+    private String uploadDir;  // 파일 업로드 경로
 
-    //글 저장
     @PostMapping("/post/save")
     public String savePost(@RequestParam("rmBoardTitle") String rmBoardTitle,
                            @RequestParam("postContent") String postContent,
@@ -110,13 +119,14 @@ public class PostController {
                            @RequestParam("category") String category,
                            @RequestParam(value = "amount", required = false) Integer amount,
                            @RequestParam(value = "deposit", required = false) Integer deposit,
+                           @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
                            HttpServletRequest request) {
-        // 세션에서 로그인한 사용자 가져오기
+
         HttpSession session = request.getSession(false);
         User loginUser = (session != null) ? (User) session.getAttribute(SessionConst.LOGIN_USER) : null;
 
         if (loginUser == null) {
-            return "redirect:/auth/login"; // 로그인하지 않았다면 로그인 페이지로 이동
+            return "redirect:/auth/login";
         }
 
         Post post = new Post();
@@ -124,28 +134,47 @@ public class PostController {
         post.setPostContent(postContent);
         post.setAuthorRegion(authorRegion);
         post.setCategory(category);
+        post.setAmount(amount);
+        post.setDeposit(deposit);
+        post.setUserId(loginUser.getUsername());
+        post.setAuthorName(loginUser.getName());
+        post.setAuthorAge(loginUser.getAge());
+        post.setAuthorGender(loginUser.getGender().name());
         post.setPostDate(LocalDateTime.now());
-        post.setPostViews(0);
+        post.setUserPreference("일반");
 
-        // 로그인한 사용자 정보 저장
-        post.setAuthorAge(25); // 나이 데이터 추가 필요
-        post.setAuthorName(loginUser.getName()); // 로그인한 사용자의 이름
-        post.setAuthorGender(loginUser.getGender().toString()); // 성별 (MALE, FEMALE)
-        post.setUserId(loginUser.getUsername()); // 로그인한 사용자의 ID
-        post.setUserPreference("default");
-
-        // 방 있음인 경우만 금액과 보증금 설정
-        if ("방 있음".equals(category)) {
-            post.setAmount(amount != null ? amount : 0);
-            post.setDeposit(deposit != null ? deposit : 0);
-        } else {
-            post.setAmount(0);
-            post.setDeposit(0);
+        // ✅ 여러 개의 사진 저장 로직 추가
+        List<String> photoUrls = new ArrayList<>();
+        String uploadDir = System.getProperty("user.dir") + "/uploads";
+        File uploadDirectory = new File(uploadDir);
+        if (!uploadDirectory.exists()) {
+            uploadDirectory.mkdirs();
         }
 
+        if (photos != null && !photos.isEmpty()) {
+            for (MultipartFile photo : photos) {
+                if (!photo.isEmpty()) {
+                    try {
+                        String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+                        File destinationFile = new File(uploadDir, fileName);
+                        photo.transferTo(destinationFile);
+                        photoUrls.add("/uploads/" + fileName);
+                        System.out.println("업로드된 이미지: " + fileName);
+                    } catch (IOException e) {
+                        System.out.println("이미지 업로드 실패: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else {
+            System.out.println("업로드된 이미지 없음");
+        }
+
+        post.setPhotoUrls(photoUrls);
         postService.savePost(post);
         return "redirect:/board/" + (category.equals("방 있음") ? "rooms" : "no-rooms");
     }
+
 
     //글 조회 (방 있음 || 방 없음)
     @GetMapping("/post/{id}")
@@ -206,6 +235,8 @@ public class PostController {
                              @RequestParam("category") String category,
                              @RequestParam(value = "amount", required = false) Integer amount,
                              @RequestParam(value = "deposit", required = false) Integer deposit,
+                             @RequestParam(value = "deleteImages", required = false) List<String> deleteImages,
+                             @RequestParam(value = "newPhotos", required = false) List<MultipartFile> newPhotos,
                              HttpServletRequest request) {
 
         HttpSession session = request.getSession(false);
@@ -233,6 +264,45 @@ public class PostController {
             post.setDeposit(0);
         }
 
+        // 기존 이미지 삭제
+        List<String> photoUrls = post.getPhotoUrls();
+        if (deleteImages != null) {
+            photoUrls.removeAll(deleteImages);
+            // 실제 파일 삭제
+            for (String imageUrl : deleteImages) {
+                File file = new File(System.getProperty("user.dir") + imageUrl);
+                if (file.exists()) {
+                    file.delete();
+                    System.out.println("삭제된 이미지: " + imageUrl);
+                }
+            }
+        }
+
+        //새로운 이미지 추가
+        if (newPhotos != null && !newPhotos.isEmpty()) {
+            String uploadDir = System.getProperty("user.dir") + "/uploads";
+            File uploadDirectory = new File(uploadDir);
+            if (!uploadDirectory.exists()) {
+                uploadDirectory.mkdirs();
+            }
+
+            for (MultipartFile photo : newPhotos) {
+                if (!photo.isEmpty()) {
+                    try {
+                        String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+                        File destinationFile = new File(uploadDir, fileName);
+                        photo.transferTo(destinationFile);
+                        photoUrls.add("/uploads/" + fileName);
+                        System.out.println("업로드된 이미지: " + fileName);
+                    } catch (IOException e) {
+                        System.out.println("이미지 업로드 실패: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+
+        post.setPhotoUrls(photoUrls);
         postService.savePost(post);
         return "redirect:/board/post/" + id;
     }
