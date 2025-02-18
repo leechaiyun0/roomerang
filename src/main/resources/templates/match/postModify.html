@@ -3,6 +3,142 @@
 <head>
   <meta charset="UTF-8">
   <title>글 수정</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F8F9FA;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #505D96;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #505D96;
+      outline: none;
+      box-shadow: 0 0 5px rgba(80, 93, 150, 0.3);
+    }
+
+    /* ✅ 파일 업로드 커스텀 */
+    .file-input-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f8f9fa;
+    }
+
+    .file-input-container:hover {
+      border-color: #505D96;
+    }
+
+    .file-input-container label {
+      cursor: pointer;
+      font-weight: bold;
+      color: #505D96;
+    }
+
+    /* ✅ 버튼과 찜 버튼을 같은 줄에 정렬 */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* ✅ 버튼 스타일 (크기 통일) */
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+     /* transition: background 0.3s, transform 0.2s;*/
+      width: 80px;
+      height: 40px;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    .btn-primary {
+      background-color: #505D96;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3A4A7A;
+     /* transform: translateY(-2px);*/
+    }
+
+    .btn-cancel {
+      background-color: #E74C3C;
+      color: white;
+    }
+
+    .btn-cancel:hover {
+      background-color: #C0392B;
+     /* transform: translateY(-2px);*/
+    }
+
+    /* ✅ 숨겨진 필드 */
+    #extraFields {
+      display: none;
+    }
+  </style>
+
   <script>
     function toggleFields() {
       var category = document.getElementById("category").value;
@@ -17,30 +153,44 @@
   </script>
 </head>
 <body>
+
+<div class="container">
 <h1>글 수정</h1>
 
 <form th:action="@{/board/post/update}" method="post" enctype="multipart/form-data">
+
   <input type="hidden" name="id" th:value="${post.rmPostId}">
 
-  <label>제목: <input type="text" name="rmBoardTitle" th:value="${post.rmBoardTitle}" required></label><br>
-  <label>내용: <textarea name="postContent" required th:text="${post.postContent}"></textarea></label><br>
+  <div class="form-group">
+  <label>제목 <input type="text" name="rmBoardTitle" th:value="${post.rmBoardTitle}" required></label><br>
+  </div>
 
   <!-- 카테고리 선택 -->
-  <label>카테고리:
-    <select id="category" name="category" onchange="toggleFields()">
-      <option value="방 있음" th:selected="${post.category == '방 있음'}">방 있음</option>
-      <option value="방 없음" th:selected="${post.category == '방 없음'}">방 없음</option>
-    </select>
-  </label><br>
+  <div class="form-group">
+    <label>카테고리
+      <select id="category" name="category" onchange="toggleFields()">
+        <option value="방 있음" th:selected="${post.category == '방 있음'}">방 있음</option>
+        <option value="방 없음" th:selected="${post.category == '방 없음'}">방 없음</option>
+      </select>
+    </label><br>
+  </div>
+
+
+  <div class="form-group">
+  <label>내용 <textarea name="postContent" required th:text="${post.postContent}"></textarea></label><br>
+  </div>
 
   <!-- 방 있음일 경우에만 금액, 보증금 입력란 표시 -->
+  <div class="form-group">
   <div id="extraFields" th:style="${post.category == '방 있음'} ? 'display:block;' : 'display:none;'">
-    <label>금액: <input type="number" name="amount" th:value="${post.amount}"></label><br>
-    <label>보증금: <input type="number" name="deposit" th:value="${post.deposit}"></label><br>
+    <label>금액 <input type="number" name="amount" th:value="${post.amount}"></label><br>
+    <label>보증금 <input type="number" name="deposit" th:value="${post.deposit}"></label><br>
+  </div>
   </div>
 
   <!-- 지역 선택 -->
-  <label for="authorRegion">지역:</label>
+  <div class="form-group">
+  <label for="authorRegion">지역</label>
   <select name="authorRegion" id="authorRegion" required>
     <option value="">지역을 선택하세요</option>
     <option value="두정동" th:selected="${post.authorRegion == '두정동'}">두정동</option>
@@ -63,10 +213,12 @@
     <option value="업성동" th:selected="${post.authorRegion == '업성동'}">업성동</option>
     <option value="청당동" th:selected="${post.authorRegion == '청당동'}">청당동</option>
   </select>
+  </div>
 
   <br><br>
 
   <div>
+    <div class="form-group">
     <h3>현재 업로드된 사진</h3>
     <th:block th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
       <div>
@@ -82,16 +234,23 @@
     </th:block>
   </div>
 
-  <label for="newPhotos">새로운 사진 추가:</label>
+  <div class="form-group">
+  <label for="newPhotos">새로운 사진 추가</label>
   <input type="file" id="newPhotos" name="newPhotos" accept="image/*" multiple>
+  </div>
+  </div>
 
   <br><br>
 
-  <button type="submit">수정 완료</button>
+  <div class="button-container">
+  <button type="submit" class="btn btn-primary">수정</button>
+    <a th:href="@{/board/post/{id}(id=${post.rmPostId})}" class="btn btn-cancel">취소</a>
+  </div>
 </form>
 
-<a th:href="@{/board/post/{id}(id=${post.rmPostId})}">취소</a>
 
+
+</div>
 <script>
   toggleFields(); // 페이지 로드 시 올바른 필드 표시
 </script>

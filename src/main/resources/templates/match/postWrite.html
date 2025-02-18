@@ -3,111 +3,142 @@
 <head>
     <meta charset="UTF-8">
     <title>글 등록</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
     <style>
         body {
-            font-family: 'Noto Sans KR', sans-serif;
-            background-color: #F8F9FC;
+            font-family: Arial, sans-serif;
+            background-color: #F8F9FA;
+            margin: 0;
+            padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
         }
 
         .container {
-            background-color: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
             width: 400px;
             text-align: center;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         h1 {
             font-size: 24px;
-            font-weight: bold;
             color: #505D96;
-            margin-bottom: 30px;
-        }
-
-        .form-group {
-            text-align: left;
             margin-bottom: 20px;
         }
 
-        .form-group label {
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
             font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 5px;
             display: block;
+            margin-bottom: 5px;
         }
 
-        .form-group input, .form-group textarea, .form-group select {
+        input, select, textarea {
             width: 100%;
-            padding: 12px;
-            border: 2px solid #d1d5db;
-            border-radius: 8px;
-            background-color: #EDF2F7;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
             font-size: 14px;
-            color: #333;
             box-sizing: border-box;
-            margin-top: 5px;
         }
 
-        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
             border-color: #505D96;
             outline: none;
-            box-shadow: 0 0 5px rgba(80, 93, 150, 0.5);
+            box-shadow: 0 0 5px rgba(80, 93, 150, 0.3);
         }
 
-        .form-group textarea {
-            resize: vertical;
-            height: 100px;
+        /* ✅ 파일 업로드 커스텀 */
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #f8f9fa;
         }
 
-        .form-group input[type="file"] {
-            background-color: white;
-            border: none;
-            padding: 5px;
+        .file-input-container:hover {
+            border-color: #505D96;
         }
 
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
+        .file-input-container label {
+            cursor: pointer;
+            font-weight: bold;
+            color: #505D96;
+        }
+
+        /* ✅ 버튼과 찜 버튼을 같은 줄에 정렬 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        /* ✅ 버튼 스타일 (크기 통일) */
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 16px;
             border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+           /* transition: background 0.3s, transform 0.2s;*/
+            width: 80px;
+            height: 40px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
             background-color: #505D96;
             color: white;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.3s;
-            margin-top: 20px;
         }
 
-        button:hover {
+        .btn-primary:hover {
             background-color: #3A4A7A;
+            /*transform: translateY(-2px);*/
         }
 
-        a {
-            display: block;
-            margin-top: 20px;
-            text-decoration: none;
-            color: #505D96;
-            font-weight: bold;
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .btn-secondary:hover {
+            background-color: #5a6268;
+           /* transform: translateY(-2px);*/
         }
 
+        /* ✅ 숨겨진 필드 */
+        #extraFields {
+            display: none;
+        }
     </style>
+
     <script>
         function toggleFields() {
             var category = document.getElementById("category").value;
@@ -125,6 +156,14 @@
         <div class="form-group">
             <label for="rmBoardTitle">제목</label>
             <input type="text" id="rmBoardTitle" name="rmBoardTitle" required>
+        </div>
+
+        <div class="form-group">
+            <label for="category">카테고리</label>
+            <select id="category" name="category" onchange="toggleFields()">
+                <option value="방 있음">방 있음</option>
+                <option value="방 없음">방 없음</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -158,20 +197,14 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label for="category">카테고리</label>
-            <select id="category" name="category" onchange="toggleFields()">
-                <option value="방 있음">방 있음</option>
-                <option value="방 없음">방 없음</option>
-            </select>
-        </div>
 
+        <!-- ✅ 파일 업로드 스타일 -->
         <div class="form-group">
-            <label for="photos">사진 업로드</label>
             <input type="file" id="photos" name="photos" accept="image/*" multiple>
         </div>
 
-        <div id="extraFields" style="display:none;">
+        <!-- ✅ 방 있음일 경우만 보이는 필드 -->
+        <div id="extraFields">
             <div class="form-group">
                 <label for="amount">금액</label>
                 <input type="number" id="amount" name="amount">
@@ -181,11 +214,12 @@
                 <input type="number" id="deposit" name="deposit">
             </div>
         </div>
-
-        <button type="submit">등록</button>
+        <div class="button-container">
+        <button type="submit" class="btn btn-primary">등록</button>
+            <a href="/board/rooms" class="btn btn-secondary">목록</a>
+        </div>
     </form>
 
-    <a href="/board/rooms">목록으로 돌아가기</a>
 </div>
 
 <script>toggleFields();</script>

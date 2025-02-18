@@ -204,7 +204,7 @@
 <!-- 배너 -->
 <div class="banner">
     <button class="banner-arrow left-arrow" onclick="prevSlide()"><img th:src="@{/images/left-arrow.png}"></button>
-    <img id="bannerImage" th:src="@{/images/banner1.jpg}" alt="배너 이미지">
+    <img id="bannerImage" th:src="@{/images/banner-1.jpg}" alt="배너 이미지">
     <button class="banner-arrow right-arrow" onclick="nextSlide()"><img th:src="@{/images/right-arrow.png}"></button>
 </div>
 
@@ -228,9 +228,10 @@
 
     /* 배너 슬라이드 */
     var bannerImages = [
-        "/images/banner1.jpg",
-        "/images/banner2.jpg",
-        "/images/banner3.jpg"
+        "/images/banner-1.jpg",
+        "/images/banner-2.jpg",
+        "/images/banner-3.jpg",
+        "/images/banner-4.jpg"
     ];
     var currentIndex = 0;
 

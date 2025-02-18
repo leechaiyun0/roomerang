@@ -146,7 +146,9 @@
 
 <div class="navbar">
     <div class="logo">
+        <a th:href="@{/}">
         <img th:src="@{/images/logo.png}" alt="로고">
+        </a>
     </div>
     <div class="nav-links">
         <a th:href="@{/board/rooms}">매칭해방</a>
@@ -169,17 +171,23 @@
     <button class="banner-arrow left-arrow" onclick="prevSlide()"><img th:src="@{/images/left-arrow.png}" alt="좌">
     </button>
 
-    <img id="bannerImage" th:src="@{/images/banner1.jpg}" alt="배너 이미지">
+    <img id="bannerImage" th:src="@{/images/banner-1.jpg}" alt="배너 이미지">
 
     <button class="banner-arrow right-arrow" onclick="nextSlide()"><img th:src="@{/images/right-arrow.png}" alt="우">
     </button>
 </div>
 
+
+
+
+
+
 <script>
     var bannerImages = [
-        "/images/banner1.jpg",
-        "/images/banner2.jpg",
-        "/images/banner3.jpg"
+        "/images/banner-1.jpg",
+        "/images/banner-2.jpg",
+        "/images/banner-3.jpg",
+        "/images/banner-4.jpg"
     ];
     var currentIndex = 0;
 
