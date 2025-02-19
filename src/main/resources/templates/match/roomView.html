@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>글 상세 조회</title>
@@ -101,7 +103,7 @@
 
         .btn-primary:hover {
             background-color: #3A4A7A;
-         /*   transform: translateY(-2px);*/
+            /*   transform: translateY(-2px);*/
         }
 
         .btn-secondary {
@@ -111,7 +113,7 @@
 
         .btn-secondary:hover {
             background-color: #5a6268;
-           /* transform: translateY(-2px);*/
+            /* transform: translateY(-2px);*/
         }
 
         /* ✅ 찜 버튼 (버튼과 크기 맞춤) */
@@ -156,6 +158,9 @@
 
 <body>
 
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
+
 <div>
 
     <!-- ✅ 제목 -->
@@ -173,9 +178,9 @@
 
     <!-- ✅ 게시글 정보 -->
     <p class="post-info">작성자: <span th:text="${post.authorName}"></span>
-         <span th:text="${post.authorRegion}"></span>
-         <span th:text="${post.postViews}"></span>
-         <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+        <span th:text="${post.authorRegion}"></span>
+        <span th:text="${post.postViews}"></span>
+        <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span></p>
 
     <p class="post-info">
         금액: <span th:text="${post.amount}"></span> 만원

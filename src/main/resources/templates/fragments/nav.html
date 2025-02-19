@@ -1,9 +1,11 @@
+<!-- resources/templates/fragments/nav.html -->
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
 </head>
 <body>
+
 <!-- ✅ 네비게이션 바 -->
 <div class="navbar" th:fragment="navbar">
   <div class="logo">
@@ -11,18 +13,25 @@
       <img th:src="@{/images/logo.png}" alt="로고">
     </a>
   </div>
+
+  <!-- 🔹 네비게이션 링크 -->
   <div class="nav-links">
-    <a th:href="@{/board/rooms}">매칭해방</a>
-    <a th:href="@{/share/list}">나눔해방</a>
+    <a th:href="@{/board/rooms}">🏠 매칭해방</a>
+    <a th:href="@{/share/list}">🎁 나눔해방</a>
   </div>
+
+  <!-- 🔹 우측 사용자 메뉴 -->
   <div class="header-right">
     <div class="icons">
-      <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
-      <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
-      <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
+      <a href="#"><img th:src="@{/images/chat.png}" alt="💬 채팅"></a>
+      <a href="#"><img th:src="@{/images/alarm.png}" alt="🔔 알림"></a>
+      <a href="#"><img th:src="@{/images/my-page.png}" alt="👤 내정보"></a>
     </div>
+
+    <!-- 🔹 로그인 상태에 따라 메뉴 변경 -->
     <div class="user-menu">
-      <span th:if="${loginUser != null}" th:text="|${loginUser.name}님|"></span>
+      <span th:if="${loginUser != null}" th:text="|👋 ${loginUser.name}님 환영합니다!|"></span>
+      <a th:if="${loginUser != null}" th:href="@{/auth/logout}">🚪 로그아웃</a>
       <a th:if="${loginUser == null}" th:href="@{/auth/login}">로그인 해주세요</a>
     </div>
   </div>
