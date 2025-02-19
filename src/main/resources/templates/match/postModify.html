@@ -181,11 +181,36 @@
   </div>
 
   <!-- 방 있음일 경우에만 금액, 보증금 입력란 표시 -->
-  <div class="form-group">
-  <div id="extraFields" th:style="${post.category == '방 있음'} ? 'display:block;' : 'display:none;'">
+  <div id="extraFields">
+  <div class="form-group" th:style="${post.category == '방 있음'} ? 'display:block;' : 'display:none;'">
     <label>금액 <input type="number" name="amount" th:value="${post.amount}"></label><br>
     <label>보증금 <input type="number" name="deposit" th:value="${post.deposit}"></label><br>
   </div>
+
+    <div>
+      <div class="form-group">
+        <h3>현재 업로드된 사진</h3>
+        <th:block th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+          <div>
+            <th:block th:each="photoUrl, iterStat : ${post.photoUrls}">
+              <div>
+                <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="max-width: 200px; display: block;">
+                <label>
+                  <input type="checkbox" name="deleteImages" th:value="${photoUrl}"> 삭제
+                </label>
+              </div>
+            </th:block>
+          </div>
+        </th:block>
+      </div>
+
+      <div class="form-group">
+        <label for="newPhotos">새로운 사진 추가</label>
+        <input type="file" id="newPhotos" name="newPhotos" accept="image/*" multiple>
+      </div>
+    </div>
+
+    <br><br>
   </div>
 
   <!-- 지역 선택 -->
@@ -213,31 +238,6 @@
     <option value="업성동" th:selected="${post.authorRegion == '업성동'}">업성동</option>
     <option value="청당동" th:selected="${post.authorRegion == '청당동'}">청당동</option>
   </select>
-  </div>
-
-  <br><br>
-
-  <div>
-    <div class="form-group">
-    <h3>현재 업로드된 사진</h3>
-    <th:block th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
-      <div>
-        <th:block th:each="photoUrl, iterStat : ${post.photoUrls}">
-          <div>
-            <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="max-width: 200px; display: block;">
-            <label>
-              <input type="checkbox" name="deleteImages" th:value="${photoUrl}"> 삭제
-            </label>
-          </div>
-        </th:block>
-      </div>
-    </th:block>
-  </div>
-
-  <div class="form-group">
-  <label for="newPhotos">새로운 사진 추가</label>
-  <input type="file" id="newPhotos" name="newPhotos" accept="image/*" multiple>
-  </div>
   </div>
 
   <br><br>
