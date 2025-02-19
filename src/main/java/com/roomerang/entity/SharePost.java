@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -42,6 +44,8 @@ public class SharePost {
     @Column(nullable = false)
     private Integer viewCount;
 
-    @Column(nullable = true, length = 500)
-    private String photoUrl;
+    @ElementCollection
+    @CollectionTable(name = "sharepost_images", joinColumns = @JoinColumn(name = "txn_post_id"))
+    @Column(name = "photo_url", length = 500)
+    private List<String> photoUrls = new ArrayList<>();
 }

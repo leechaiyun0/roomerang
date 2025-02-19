@@ -10,7 +10,6 @@
 
   <!-- 글 등록 폼 -->
   <form th:action="@{/share/create}" method="post" enctype="multipart/form-data">
-    <!-- 로그인한 사용자 정보 자동 반영 -->
     <input type="hidden" name="userId" th:value="${loginUser?.username}">
     <input type="hidden" name="authorName" th:value="${loginUser?.name}">
 
@@ -24,9 +23,10 @@
       <textarea class="form-control" id="txnBoardContent" name="txnBoardContent" rows="5" required></textarea>
     </div>
 
+    <!-- 여러 개의 이미지 업로드 가능 -->
     <div>
-      <label for="photo" class="form-label">사진 업로드:</label>
-      <input type="file" class="form-control" id="photo" name="photo" accept="image/*">
+      <label for="photos" class="form-label">사진 업로드:</label>
+      <input type="file" class="form-control" id="photos" name="photos" accept="image/*" multiple>
     </div>
 
     <div>
