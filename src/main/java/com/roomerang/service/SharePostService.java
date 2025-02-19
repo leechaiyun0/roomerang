@@ -8,95 +8,111 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class SharePostService {
 
     private final SharePostRepository sharePostRepository;
+    private final String uploadDir = System.getProperty("user.dir") + "/uploads";
 
     public SharePostService(SharePostRepository sharePostRepository) {
         this.sharePostRepository = sharePostRepository;
     }
 
-    //최신순 정렬 적용
     public Page<SharePost> getAllPosts(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "postDate"));
         return sharePostRepository.findAll(pageable);
     }
 
-    @Transactional
-    public SharePost getPostById(Long id) {
-        SharePost post = sharePostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        increaseViewCount(id);
-        return post;
-    }
-
-    @Transactional
-    public void increaseViewCount(Long id) {
-        SharePost post = sharePostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-        post.setViewCount(post.getViewCount() + 1);
-        sharePostRepository.save(post);
-    }
-
-    public SharePost createPost(SharePost sharePost) {
-        if (sharePost.getTxnBoardTitle() == null || sharePost.getTxnBoardTitle().trim().isEmpty()) {
-            throw new IllegalArgumentException("게시글 제목은 필수 입력값입니다.");
+    public List<SharePost> searchPosts(String keyword) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return sharePostRepository.findAll();
         }
-        sharePost.setPostDate(LocalDateTime.now()); // ✅ 현재 시간 설정
-        sharePost.setViewCount(0); // ✅ 기본값 0 설정
-        return sharePostRepository.save(sharePost);
+        return sharePostRepository.findByTxnBoardTitleContaining(keyword);
     }
 
-
-
+    public SharePost getPostById(Long id) {
+        return sharePostRepository.findById(id).orElse(null);
+    }
 
     @Transactional
-    public SharePost updatePost(Long id, SharePost sharePost, String userId) {
+    public void createPost(SharePost sharePost, List<MultipartFile> photos) throws IOException {
+        List<String> photoUrls = new ArrayList<>();
+
+        if (photos != null && !photos.isEmpty()) {
+            File uploadDirectory = new File(uploadDir);
+            if (!uploadDirectory.exists()) {
+                uploadDirectory.mkdirs();
+            }
+
+            for (MultipartFile photo : photos) {
+                if (!photo.isEmpty()) {
+                    String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+                    File destinationFile = new File(uploadDir, fileName);
+                    photo.transferTo(destinationFile);
+                    photoUrls.add("/uploads/" + fileName);
+                }
+            }
+        }
+
+        sharePost.setPhotoUrls(photoUrls);
+        sharePost.setPostDate(LocalDateTime.now());
+        sharePost.setViewCount(0);
+        sharePostRepository.save(sharePost);
+    }
+
+    @Transactional
+    public void updatePost(Long id, SharePost sharePost, List<MultipartFile> photos, List<String> deletePhotos) throws IOException {
         SharePost existingPost = sharePostRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-
-        // ✅ 본인 확인 (강제 로그인 "testUser" 비교)
-        if (!existingPost.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("게시글을 수정할 권한이 없습니다.");
-        }
 
         existingPost.setTxnBoardTitle(sharePost.getTxnBoardTitle());
         existingPost.setTxnBoardContent(sharePost.getTxnBoardContent());
         existingPost.setPrice(sharePost.getPrice());
         existingPost.setLocation(sharePost.getLocation());
 
-        // ✅ 기존 사진 유지
-        if (sharePost.getPhotoUrl() != null) {
-            existingPost.setPhotoUrl(sharePost.getPhotoUrl());
+        //기존 이미지 중 삭제할 이미지 제거
+        List<String> updatedPhotoUrls = new ArrayList<>(existingPost.getPhotoUrls());
+        if (deletePhotos != null) {
+            for (String deleteUrl : deletePhotos) {
+                updatedPhotoUrls.remove(deleteUrl);
+
+                //파일 시스템에서도 삭제
+                File fileToDelete = new File(System.getProperty("user.dir") + deleteUrl);
+                if (fileToDelete.exists()) {
+                    fileToDelete.delete();
+                }
+            }
         }
 
-        return sharePostRepository.save(existingPost);
-    }
+        //새로운 이미지 추가
+        if (photos != null && !photos.isEmpty()) {
+            for (MultipartFile photo : photos) {
+                if (!photo.isEmpty()) {
+                    String fileName = UUID.randomUUID() + "_" + photo.getOriginalFilename();
+                    String uploadDir = System.getProperty("user.dir") + "/uploads/";
+                    File file = new File(uploadDir, fileName);
+                    photo.transferTo(file);
+                    updatedPhotoUrls.add("/uploads/" + fileName);
+                }
+            }
+        }
 
+        existingPost.setPhotoUrls(updatedPhotoUrls);
+        sharePostRepository.save(existingPost);
+    }
 
 
     @Transactional
-    public void deletePost(Long id, String userId) {
-        SharePost existingPost = sharePostRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("게시글을 찾을 수 없습니다."));
-
-        if (!existingPost.getUserId().equals(userId)) {
-            throw new IllegalArgumentException("게시글을 삭제할 권한이 없습니다.");
-        }
-
-        sharePostRepository.delete(existingPost);
+    public void deletePost(Long id) {
+        sharePostRepository.deleteById(id);
     }
-
-    public List<SharePost> searchPosts(String keyword) {
-        if (keyword == null || keyword.trim().isEmpty()) {
-            return sharePostRepository.findAll(); // 검색어 없으면 전체 목록 반환
-        }
-        return sharePostRepository.findByTxnBoardTitleContaining(keyword);
-    }
-
 }

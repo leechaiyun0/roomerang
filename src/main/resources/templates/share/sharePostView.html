@@ -8,26 +8,27 @@
 
 <div>
 
-  <!-- 이미지 + 게시글 정보 -->
-  <div class="post-container">
-    <div class="image-container" th:if="${post.photoUrl != null and not #strings.isEmpty(post.photoUrl)}">
-      <img th:src="@{${post.photoUrl}}" alt="첨부 이미지">
+  <!-- 여러 개의 이미지 표시 -->
+  <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+    <h3>첨부된 이미지</h3>
+    <th:block th:each="photoUrl : ${post.photoUrls}">
+      <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="width: 300px; height: auto;">
+    </th:block>
+  </div>
+
+  <div class="info-box">
+    <h1 class="post-title" th:text="${post.txnBoardTitle}"></h1>
+
+    <div class="info-header">
+      <strong>작성자:</strong> <span th:text="${post.authorName}"></span> |
+      <strong>조회수:</strong> <span th:text="${post.viewCount}"></span> |
+      <strong>등록 날짜:</strong> <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd')}"></span> |
+      <strong>지역:</strong> <span th:text="${post.location}"></span>
     </div>
 
-    <div class="info-box">
-      <h1 class="post-title" th:text="${post.txnBoardTitle}"></h1>
-
-      <div class="info-header">
-        <strong>작성자:</strong> <span th:text="${post.authorName}"></span> |
-        <strong>조회수:</strong> <span th:text="${post.viewCount}"></span> |
-        <strong>등록 날짜:</strong> <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd')}"></span> |
-        <strong>지역:</strong> <span th:text="${post.location}"></span>
-      </div>
-
-      <!-- 가격 박스 -->
-      <div class="price-box">
-        <p><span style="font-size: 20px;">가격:</span> <span th:text="${post.price}"></span> 원</p>
-      </div>
+    <!-- 가격 박스 -->
+    <div class="price-box">
+      <p><span style="font-size: 20px;">가격:</span> <span th:text="${post.price}"></span> 원</p>
     </div>
   </div>
 
