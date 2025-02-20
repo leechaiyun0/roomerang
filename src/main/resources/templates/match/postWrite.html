@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>글 등록</title>
@@ -108,7 +110,7 @@
             font-weight: bold;
             text-decoration: none;
             cursor: pointer;
-           /* transition: background 0.3s, transform 0.2s;*/
+            /* transition: background 0.3s, transform 0.2s;*/
             width: 80px;
             height: 40px;
             border: none;
@@ -132,7 +134,7 @@
 
         .btn-secondary:hover {
             background-color: #5a6268;
-           /* transform: translateY(-2px);*/
+            /* transform: translateY(-2px);*/
         }
 
         /* ✅ 숨겨진 필드 */
@@ -181,7 +183,9 @@
     </script>
 
 </head>
-<body>
+<>
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
 
 <div class="container">
     <h1>글 등록</h1>
@@ -265,7 +269,7 @@
         </div>
 
         <div class="button-container">
-        <button type="submit" class="btn btn-primary">등록</button>
+            <button type="submit" class="btn btn-primary">등록</button>
             <a href="/board/rooms" class="btn btn-secondary">목록</a>
         </div>
     </form>
@@ -274,5 +278,6 @@
 
 <script>toggleFields();</script>
 
+</div>
 </body>
 </html>

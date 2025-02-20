@@ -22,44 +22,11 @@
       <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
     </div>
     <div class="user-menu">
-      <th:block th:if="${session.loginUser != null}">
-        <span th:text="|${session.loginUser.name}님|"></span>
-        <img th:src="@{/images/plus.png}" alt="더보기" class="toggle-button">
-        <div class="dropdown-content">
-          <a href="#">내 정보</a>
-          <a th:href="@{/favorite/list(userId=${loginUser.id})}">관심 목록</a>
-          <a href="#">리뷰 보기</a>
-          <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
-          <form id="logoutForm" th:action="@{/auth/logout}" method="post" style="display: none;"></form>
-        </div>
-      </th:block>
-
-
-      <script>
-        /* 드롭다운 메뉴 */
-        document.addEventListener("DOMContentLoaded", function () {
-          const userMenu = document.querySelector(".toggle-button");
-          const dropdown = document.querySelector(".dropdown-content");
-
-          userMenu.addEventListener("click", function (event) {
-            event.stopPropagation();
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-          });
-
-          document.addEventListener("click", function (event) {
-            if (!userMenu.contains(event.target)) {
-              dropdown.style.display = "none";
-            }
-          });
-        });
-      </script>
-
-      <!-- 🔹 로그인하지 않은 사용자 -->
-      <th:block th:unless="${session.loginUser != null}">
-        <a th:href="@{/auth/login}">로그인 해주세요</a>
-      </th:block>
+      <span th:if="${loginUser != null}" th:text="|${loginUser.name}님|"></span>
+      <a th:if="${loginUser == null}" th:href="@{/auth/login}">로그인 해주세요</a>
     </div>
   </div>
 </div>
+
 </body>
 </html>

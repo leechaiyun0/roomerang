@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>글 상세 조회</title>
@@ -110,7 +112,7 @@
             width: 40px;
             height: 40px;
             cursor: pointer;
-           /* transition: transform 0.2s ease-in-out;*/
+            /* transition: transform 0.2s ease-in-out;*/
         }
 
         .wishlist:hover {
@@ -140,6 +142,9 @@
 
 <body>
 
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
+
 <div>
 
     <!-- ✅ 제목 -->
@@ -154,7 +159,7 @@
     <p class="post-info .p1">작성자: <span th:text="${post.authorName}"></span>
         <span th:text="${post.authorRegion}"></span>
         <span th:text="${post.postViews}"></span>
-        </p>
+    </p>
 
     <!-- ✅ 게시글 내용 -->
     <pre th:text="${post.postContent}"></pre>
