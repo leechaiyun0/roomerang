@@ -119,9 +119,6 @@ public class PostController {
                            @RequestParam("category") String category,
                            @RequestParam(value = "amount", required = false) Integer amount,
                            @RequestParam(value = "deposit", required = false) Integer deposit,
-                           @RequestParam(value = "smoking", required = false, defaultValue = "false") boolean smoking,
-                           @RequestParam(value = "pets", required = false, defaultValue = "false") boolean pets,
-                           @RequestParam(value = "lifestyle", required = false, defaultValue = "none") String lifestyle,
                            @RequestParam(value = "photos", required = false) List<MultipartFile> photos,
                            HttpServletRequest request) {
 
@@ -145,11 +142,6 @@ public class PostController {
         post.setAuthorGender(loginUser.getGender().name());
         post.setPostDate(LocalDateTime.now());
         post.setUserPreference("일반");
-
-        // ✅ 추가: 흡연, 반려동물, 생활 패턴 저장
-        post.setSmoking(smoking);
-        post.setPets(pets);
-        post.setLifestyle(lifestyle);
 
         // ✅ 여러 개의 사진 저장 로직 추가
         List<String> photoUrls = new ArrayList<>();
@@ -243,9 +235,6 @@ public class PostController {
                              @RequestParam("category") String category,
                              @RequestParam(value = "amount", required = false) Integer amount,
                              @RequestParam(value = "deposit", required = false) Integer deposit,
-                             @RequestParam(value = "smoking", required = false, defaultValue = "false") boolean smoking,
-                             @RequestParam(value = "pets", required = false, defaultValue = "false") boolean pets,
-                             @RequestParam(value = "lifestyle", required = false, defaultValue = "none") String lifestyle,
                              @RequestParam(value = "deleteImages", required = false) List<String> deleteImages,
                              @RequestParam(value = "newPhotos", required = false) List<MultipartFile> newPhotos,
                              HttpServletRequest request) {
@@ -266,11 +255,6 @@ public class PostController {
         post.setPostContent(postContent);
         post.setAuthorRegion(authorRegion);
         post.setCategory(category);
-
-        // ✅ 흡연, 반려동물, 생활 패턴 업데이트
-        post.setSmoking(smoking);
-        post.setPets(pets);
-        post.setLifestyle(lifestyle);
 
         if ("방 있음".equals(category)) {
             post.setAmount(amount != null ? amount : 0);

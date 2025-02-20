@@ -5,15 +5,51 @@
   <title>관심글 목록</title>
 </head>
 <body>
+<h1>관심글 목록</h1>
 
+<!-- 카테고리 필터 (매칭해방 / 나눔해방) -->
+<label>
+  <input type="radio" name="category" value="all" checked onclick="filterFavorites('all')"> 전체
+</label>
+<label>
+  <input type="radio" name="category" value="matching" onclick="filterFavorites('matching')"> 매칭해방
+</label>
+<label>
+  <input type="radio" name="category" value="sharing" onclick="filterFavorites('sharing')"> 나눔해방
+</label>
 
+<ul id="favoriteList">
+  <li th:each="favorite : ${favorites}" th:data-category="${favorite.post != null ? 'matching' : 'sharing'}">
+    <a th:href="@{${favorite.post != null ? '/board/post/' + favorite.post.id : '/board/share/' + favorite.sharePost.id}}"
+       th:text="${favorite.post != null ? favorite.post.rmBoardTitle : favorite.sharePost.rmBoardTitle}">
+    </a>
+    <button th:onclick="|removeFavorite(${favorite.id})|">❌ 삭제</button>
+  </li>
+</ul>
 
 <script>
+  function removeFavorite(favoriteId) {
+    fetch(`/api/favorites/toggle?userId=1&postId=${favoriteId}`, {
+      method: "POST",
     })
             .then(response => response.text())
             .then(data => {
+              alert("관심글이 삭제되었습니다.");
               location.reload(); // 페이지 새로고침
+            })
+            .catch(error => console.error("에러 발생:", error));
+  }
+
+  function filterFavorites(category) {
+    const items = document.querySelectorAll('#favoriteList li');
+    items.forEach(item => {
+      if (category === 'all' || item.getAttribute('data-category') === category) {
+        item.style.display = '';
+      } else {
+        item.style.display = 'none';
+      }
     });
+  }
 </script>
 
 </body>
