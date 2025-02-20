@@ -56,6 +56,24 @@ public class Post {
     @Column(nullable = false)
     private Integer deposit;
 
+
+
+
+
+    // ✅ 흡연 & 반려동물 체크 (true/false)
+    @Column(nullable = false)
+    private boolean smoking; // 흡연 가능 여부
+
+    @Column(nullable = false)
+    private boolean pets; // 반려동물 가능 여부
+
+    // ✅ 아침형 / 밤형 생활 패턴 (morning/night)
+    @Column
+    private String lifestyle;
+
+    @Column(nullable = false)
+    private LocalDateTime createdAt = LocalDateTime.now(); // 생성일시
+
     @ElementCollection
     @CollectionTable(name = "post_images", joinColumns = @JoinColumn(name = "post_id"))
     @Column(name = "photo_url", length = 500)
