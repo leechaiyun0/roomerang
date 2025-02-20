@@ -27,7 +27,7 @@
         <img th:src="@{/images/plus.png}" alt="더보기" class="toggle-button">
         <div class="dropdown-content">
           <a href="#">내 정보</a>
-          <a th:href="@{/favorites/list(userId=${loginUser.id})}">관심 목록</a>
+          <a th:href="@{/favorite/list(userId=${loginUser.id})}">관심 목록</a>
           <a href="#">리뷰 보기</a>
           <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
           <form id="logoutForm" th:action="@{/auth/logout}" method="post" style="display: none;"></form>

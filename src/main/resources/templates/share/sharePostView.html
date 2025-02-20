@@ -41,6 +41,33 @@
   <div class="btn-group">
     <a href="/share/list" class="btn-custom btn-secondary">목록으로</a>
 
+    <!-- ✅ 찜 버튼 (기본: binH.png, 찜된 상태: fullH.png) -->
+    <div class="wishlist">
+      <img id="favorite-img" th:src="@{/images/binH.png}" alt="찜" class="wishlist" onclick="toggleFavorite()">
+    </div>
+
+    <script>
+      function toggleFavorite() {
+          var userId = "현재 로그인된 사용자 ID"; // 실제 로그인된 사용자 ID로 대체
+          var postId = "현재 게시글 ID"; // 실제 게시글 ID로 대체
+          var postType = "MATCH"; // 현재 페이지에 맞게 변경
+
+          fetch('/favorite/toggle?userId=' + userId + '&postId=' + postId + '&postType=' + postType, {
+              method: 'POST'
+          })
+          .then(response => response.text())
+          .then(data => {
+              alert(data); // "등록되었습니다." 또는 "등록 취소되었습니다."
+              var img = document.getElementById("favorite-img");
+              if (img.src.includes("binH.png")) {
+                  img.src = "/images/fullH.png"; // 찜 등록 상태로 변경
+              } else {
+                  img.src = "/images/binH.png"; // 찜 해제 상태로 변경
+              }
+          });
+      }
+    </script>
+
     <!-- 글 작성자일 때만 수정/삭제 가능 -->
     <div th:if="${loginUser != null and post.userId == loginUser.username}">
       <a th:href="@{/share/{id}/update(id=${post.txnPostId})}" class="btn-custom">수정</a>
