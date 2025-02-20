@@ -172,14 +172,43 @@
         <a href="/board/no-rooms" class="btn btn-secondary">목록</a>
 
         <th:block th:if="${loginUser != null and loginUser.username == post.userId}">
-            <form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post" style="display:inline;">
+            <form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post"
+                  onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
                 <button type="submit" class="btn btn-danger">삭제</button>
             </form>
         </th:block>
 
         <!-- ✅ 찜 버튼 (크기 통일) -->
-        <img th:src="@{/images/binH.png}" alt="찜" class="wishlist">
+        <div class="wishlist"></div>
+        <img th:src="@{/images/binH.png}" alt="찜" class="wishlist" data-post-id="10">
     </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const favoriteButton = document.getElementById("favoriteButton");
+
+            favoriteButton.addEventListener("click", function() {
+                const postId = favoriteButton.getAttribute("data-post-id");
+                const userId = 1; // 실제 로그인된 사용자 ID로 변경해야 함
+
+                fetch(`/api/favorites/toggle?userId=${userId}&postId=${postId}`, {
+                    method: "POST",
+                })
+                    .then(response => response.text())
+                    .then(data => {
+                        alert(data); // "관심글이 업데이트되었습니다." 메시지 표시
+
+                        // 이미지 상태 업데이트 (binH <-> fullH)
+                        if (favoriteButton.src.includes("binH.png")) {
+                            favoriteButton.src = "/images/fullH.png";
+                        } else {
+                            favoriteButton.src = "/images/binH.png";
+                        }
+                    })
+                    .catch(error => console.error("에러 발생:", error));
+            });
+        });
+    </script>
 
 </div>
 

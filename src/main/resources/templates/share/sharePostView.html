@@ -3,54 +3,405 @@
 <head>
   <meta charset="UTF-8">
   <title>게시글 상세 보기</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F8F9FA;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    pre {
+      background-color: #f4f4f4;
+      padding: 15px;
+      border-radius: 8px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      text-align: left;
+      font-size: 15px;
+    }
+
+    /* ✅ 게시글 내용 (박스 처리 + 가운데 정렬) */
+    .post-content {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 20px;
+      font-weight: bold;
+      word-wrap: break-word;
+      white-space: pre-wrap;
+      text-align: center;
+      margin: 20px auto;
+      max-width: 700px;
+    }
+
+    /* ✅ 제목 스타일 */
+    h1 {
+      text-align: center;
+    }
+
+    /* ✅ 버튼과 찜 버튼을 같은 줄에 정렬 */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* ✅ 버튼 스타일 (크기 통일) */
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      /*transition: background 0.3s, transform 0.2s;*/
+      width: 80px;
+      height: 40px;
+      border: none;
+      box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 지정 */
+    }
+
+    /* ✅ `button` 태그도 동일한 크기로 강제 설정 */
+    .btn-danger {
+      background-color: #E74C3C;
+      color: white;
+      padding: 0; /* 버튼 내부 패딩 제거 */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 80px;
+      height: 40px;
+      box-sizing: border-box;
+    }
+
+    .btn-danger:hover {
+      background-color: #C0392B;
+      /*transform: translateY(-2px);*/
+    }
+
+    /* ✅ 버튼 색상 */
+    .btn-primary {
+      background-color: #505D96;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3A4A7A;
+      /*   transform: translateY(-2px);*/
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+      /* transform: translateY(-2px);*/
+    }
+
+    /* ✅ 찜 버튼 (버튼과 크기 맞춤) */
+    .wishlist {
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      /*transition: transform 0.2s ease-in-out;*/
+    }
+
+    .wishlist:hover {
+      transform: scale(1.1);
+    }
+
+    /* ✅ 게시글 정보 가운데 정렬 */
+    .post-info {
+      text-align: center;
+      font-size: 16px;
+      color: #333;
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    /* ✅ 이미지 크기 줄이기 */
+    .image-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .image-container img {
+      max-width: 400px; /* 이미지 크기 줄임 */
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      /*transition: transform 0.2s;*/
+    }
+
+    /* 📌 모달 스타일 */
+    #imageModal {
+      display: none; /* 기본적으로 숨김 */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    /* 📌 모달 내부 이미지 */
+    #imageModal img {
+      max-width: 90%;
+      max-height: 90%;
+      border-radius: 10px;
+    }
+
+    /* 📌 닫기 버튼 스타일 */
+    #closeModal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+
+
+    /* 📌 이미지 박스 */
+    .image-box {
+      position: relative;
+      display: flex;
+      justify-content: center;
+    }
+
+    .image-box img {
+      width: 90%;
+      height: auto;
+      max-height: 400px;
+      border-radius: 10px;
+      object-fit: cover;
+      cursor: pointer;
+    }
+
+    #closeModal {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      font-size: 30px;
+      color: white;
+      cursor: pointer;
+    }
+
+    /* 📌 화살표 스타일 */
+    .arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 50%;
+      font-size: 20px;
+      user-select: none;
+      transition: background 0.3s;
+    }
+
+    .arrow-left {
+      left: 10px;
+    }
+
+    .arrow-right {
+      right: 10px;
+    }
+
+    .arrow:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+  </style>
 </head>
 <body>
 
-<div>
+<div class="container">
 
-  <!-- 여러 개의 이미지 표시 -->
-  <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
-    <h3>첨부된 이미지</h3>
-    <th:block th:each="photoUrl : ${post.photoUrls}">
-      <img th:src="@{${photoUrl}}" alt="게시글 이미지" style="width: 300px; height: auto;">
-    </th:block>
-  </div>
+  <!-- 📌 제목 -->
+  <h1 class="post-title" th:text="${post.txnBoardTitle}"></h1>
 
-  <div class="info-box">
-    <h1 class="post-title" th:text="${post.txnBoardTitle}"></h1>
-
-    <div class="info-header">
-      <strong>작성자:</strong> <span th:text="${post.authorName}"></span> |
-      <strong>조회수:</strong> <span th:text="${post.viewCount}"></span> |
-      <strong>등록 날짜:</strong> <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd')}"></span> |
-      <strong>지역:</strong> <span th:text="${post.location}"></span>
+  <!-- 이미지 슬라이드 -->
+  <div class="image-box">
+    <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+      <img th:src="@{${post.photoUrls[0]}}" alt="게시글 이미지" id="mainImage">
+      <div class="arrow arrow-left" onclick="prevImage()">&#10094;</div>
+      <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
     </div>
 
-    <!-- 가격 박스 -->
-    <div class="price-box">
-      <p><span style="font-size: 20px;">가격:</span> <span th:text="${post.price}"></span> 원</p>
+    <div th:if="${post.photoUrls == null or #lists.isEmpty(post.photoUrls)}">
+      <img src="/images/default.jpg" alt="기본 이미지">
     </div>
+
   </div>
 
-  <!-- 게시글 내용 -->
-  <div class="post-content">
-    <p th:text="${post.txnBoardContent}"></p>
+  <!-- 📌 게시글 정보 -->
+  <div class="info">
+    <strong>작성자:</strong> <span th:text="${post.authorName}"></span>
+    <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span>
+    <br>
+    <span class="price-box" th:text="|금액 ${post.price}|"></span>
   </div>
 
-  <!-- 버튼 그룹 -->
-  <div class="btn-group">
-    <a href="/share/list" class="btn-custom btn-secondary">목록으로</a>
+    <!-- ✅ 버튼 그룹 -->
+    <div class="button-container">
 
-    <!-- 글 작성자일 때만 수정/삭제 가능 -->
-    <div th:if="${loginUser != null and post.userId == loginUser.username}">
-      <a th:href="@{/share/{id}/update(id=${post.txnPostId})}" class="btn-custom">수정</a>
-      <form th:action="@{/share/{id}/delete(id=${post.txnPostId})}" method="post"
-            onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
-        <button type="submit" class="btn-danger">삭제</button>
-      </form>
-    </div>
+      <!-- 작성자만 수정 및 삭제 가능 -->
+      <th:block th:if="${loginUser != null and post.userId == loginUser.username}">
+        <a th:href="@{/share/{id}/update(id=${post.txnPostId})}" class="btn btn-primary">수정</a>
+      </th:block>
+
+      <a href="/share/list" class="btn btn-secondary">목록</a>
+
+      <th:block th:if="${loginUser != null and post.userId == loginUser.username}">
+        <form th:action="@{/share/{id}/delete(id=${post.txnPostId})}" method="post"
+              onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
+          <button type="submit" class="btn btn-danger">삭제</button>
+        </form>
+      </th:block>
+
+      <!-- ✅ 찜 버튼 (크기 통일) -->
+      <div class="wishlist"></div>
+      <img id="favoriteButton" src="/images/binH.png" alt="찜" class="wishlist" data-post-id="10">
+      </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        const favoriteButton = document.getElementById("favoriteButton");
+
+        favoriteButton.addEventListener("click", function() {
+          const postId = favoriteButton.getAttribute("data-post-id");
+          const userId = 1; // 실제 로그인된 사용자 ID로 변경해야 함
+
+          fetch(`/api/favorites/toggle?userId=${userId}&postId=${postId}`, {
+            method: "POST",
+          })
+                  .then(response => response.text())
+                  .then(data => {
+                    alert(data); // "관심글이 업데이트되었습니다." 메시지 표시
+
+                    // 이미지 상태 업데이트 (binH <-> fullH)
+                    if (favoriteButton.src.includes("binH.png")) {
+                      favoriteButton.src = "/images/fullH.png";
+                    } else {
+                      favoriteButton.src = "/images/binH.png";
+                    }
+                  })
+                  .catch(error => console.error("에러 발생:", error));
+        });
+      });
+    </script>
+
+
+  <!-- 📌 이미지 확대 모달 -->
+  <div id="imageModal">
+    <span id="closeModal">&times;</span>
+    <img id="modalImage">
   </div>
-</div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      const closeModal = document.getElementById("closeModal");
+      const images = document.querySelectorAll(".image-box img"); // 모든 이미지 선택
+
+      // 📌 이미지 클릭 시 확대 모달 열기
+      images.forEach(image => {
+        image.addEventListener("click", function () {
+          modal.style.display = "flex";
+          modalImg.src = this.src;
+        });
+      });
+
+      // 📌 모달 닫기
+      closeModal.addEventListener("click", function () {
+        modal.style.display = "none";
+      });
+
+      // 📌 모달 바깥을 클릭하면 닫기
+      modal.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          modal.style.display = "none";
+        }
+      });
+    });
+  </script>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      let currentIndex = 0; // 현재 이미지 인덱스
+      let images = []; // 이미지 URL 배열
+
+      // 📌 Thymeleaf를 이용하여 JavaScript에서 이미지 URL 배열 가져오기
+      images = [[${post.photoUrls}]] [];
+
+      let mainImage = document.getElementById("mainImage");
+      let leftArrow = document.querySelector(".arrow-left");
+      let rightArrow = document.querySelector(".arrow-right");
+
+      // 📌 기본 이미지 설정
+      if (images.length > 0) {
+        mainImage.src = images[0]; // 첫 번째 이미지 설정
+        currentIndex = 0;
+      } else {
+        mainImage.src = "/images/default.jpg"; // 기본 이미지
+        leftArrow.style.display = "none";
+        rightArrow.style.display = "none";
+      }
+
+      // 📌 이미지 변경 함수
+      function changeImage(index) {
+        mainImage.style.opacity = "0"; // 페이드아웃 효과
+        setTimeout(() => {
+          mainImage.src = images[index];
+          mainImage.style.opacity = "1"; // 페이드인 효과
+        }, 300);
+      }
+
+      // 📌 이전 이미지
+      window.prevImage = function () {
+        if (images.length === 0) return;
+        currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+        changeImage(currentIndex);
+      };
+
+      // 📌 다음 이미지
+      window.nextImage = function () {
+        if (images.length === 0) return;
+        currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+        changeImage(currentIndex);
+      };
+
+      // 📌 이미지 한 개만 있을 경우 화살표 숨김
+      if (images.length <= 1) {
+        leftArrow.style.display = "none";
+        rightArrow.style.display = "none";
+      }
+    });
+  </script>
 </body>
 </html>

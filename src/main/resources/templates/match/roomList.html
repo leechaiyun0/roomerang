@@ -106,60 +106,6 @@
             margin-bottom: 20px;
         }
 
-        /* ✅ 검색창 스타일 */
-        input[type="text"] {
-            padding: 12px 15px;                /* 입력창 내부 여백 */
-            width: 300px;                      /* 입력창 너비 */
-            border: 2px solid #505D96;         /* 테두리 색상 */
-            border-radius: 8px;                /* 둥근 모서리 */
-            font-size: 16px;                   /* 글자 크기 */
-            outline: none;                     /* 포커스 시 기본 테두리 제거 */
-            transition: border-color 0.3s;     /* 호버 시 부드러운 색상 전환 */
-        }
-
-        input[type="text"]:focus {
-            border-color: #3A4A7A;             /* 클릭 시 테두리 색상 변경 */
-        }
-
-        button {
-            padding: 10px 20px;
-            background-color: #505D96;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #3A4A7A;
-        }
-
-        table {
-            width: 90%;
-            margin: 20px auto;
-            border-collapse: collapse;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th, td {
-            padding: 15px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #505D96;
-            color: white;
-        }
-
-        td {
-            background-color: white;
-        }
-
         /* ✅ 페이징 스타일 */
         .pagination {
             display: flex;
@@ -178,42 +124,69 @@
             text-decoration: underline;
         }
 
-        /* ✅ 글 등록 버튼 스타일 */
-        .write-button {
-            display: block;
-            width: 150px;
-            margin: 30px auto;
-            padding: 15px 20px;
-            background-color: #505D96;
-            color: white;
-            text-align: center;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            /*transition: background-color 0.3s, transform 0.2s;*/
+        /* ✅ 검색창, 버튼들이 한 줄에 정렬되도록 설정 */
+        .search-container {
+            display: flex;             /* 가로 정렬 */
+            justify-content: center;   /* 가운데 정렬 */
+            /*align-items: center;*/       /* 세로 중앙 정렬 */
+            gap: 10px;                 /* 요소 간 간격 */
         }
 
+        /* ✅ 검색창 스타일 */
+        .search-box {
+            width: 400px;              /* 검색창 너비 */
+            height: 45px;              /* 검색창 높이 (버튼과 동일하게 맞춤) */
+            padding: 10px 15px;        /* 내부 여백 */
+            font-size: 16px;           /* 글자 크기 */
+            border: 2px solid #505D96; /* 테두리 색상 */
+            border-radius: 8px;        /* 둥근 모서리 */
+            outline: none;             /* 클릭 시 기본 아웃라인 제거 */
+            box-sizing: border-box;    /* 패딩 포함한 크기 유지 */
+        }
+
+        /* ✅ 버튼 공통 스타일 (검색 버튼 & 글 등록 버튼) */
+        .btn-custom,
+        .write-button {
+            width: 100px;              /* 버튼 너비 (일관성 유지) */
+            height: 45px;              /* 버튼 높이 (검색창과 동일하게 맞춤) */
+            padding: 10px;             /* 내부 여백 */
+            font-size: 16px;           /* 글자 크기 */
+            font-weight: bold;         /* 글자 굵기 */
+            color: white;              /* 글자 색상 */
+            background-color: #505D96; /* 버튼 색상 */
+            border: none;              /* 기본 테두리 제거 */
+            border-radius: 8px;        /* 둥근 모서리 */
+            cursor: pointer;           /* 마우스 올릴 때 클릭 가능한 포인터 표시 */
+            display: flex;             /* 내부 정렬을 위해 flex 적용 */
+            justify-content: center;   /* 텍스트 가운데 정렬 */
+            align-items: center;       /* 세로 중앙 정렬 */
+            box-sizing: border-box;    /* 패딩 포함한 크기 유지 */
+            text-decoration: none;     /* 밑줄 제거 */
+        }
+
+        /* ✅ 버튼 호버 효과 */
+        .btn-custom:hover,
         .write-button:hover {
-            background-color: #3A4A7A;
-            /*transform: translateY(-2px);*/
+            background-color: #3A4A7A; /* 마우스 올릴 때 색상 변경 */
         }
 
         /* ✅ 카테고리 드롭다운 스타일 */
         .category-select {
-            display: block;
-            width: 160px;
-            margin: 20px auto;
-            padding: 12px 15px;
-            border: 2px solid #505D96;
-            border-radius: 8px;
-            background-color: white;
-            color: #505D96;
+            width: 100px;
+            height: 45px;              /* 높이 (검색창과 동일하게 맞춤) */
+            padding: 10px;
             font-size: 16px;
             font-weight: bold;
+            color: #505D96;
+            background-color: white;
+           /* margin: 20px auto;*/
+            border: 2px solid #505D96;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;   /* 텍스트 가운데 정렬 */
+            align-items: center;       /* 세로 중앙 정렬 */
+            box-sizing: border-box;    /* 패딩 포함한 크기 유지 */
             transition: border-color 0.3s;
         }
 
@@ -221,6 +194,57 @@
             border-color: #3A4A7A;
         }
 
+        /* ✅ 카드 그리드 스타일 */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .post-info {
+            padding: 15px;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .post-price {
+            font-size: 16px;
+            color: #505D96;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .post-location {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
 
     </style>
 </head>
@@ -231,46 +255,48 @@
 
 <!-- ✅ 방 있음 목록 -->
 <h1>방 있음 목록</h1>
-<form th:action="@{/board/search}" method="get" style="text-align: center;">
-    <input type="hidden" name="category" value="방 있음">
-    <input type="text" name="keyword" placeholder="제목 또는 작성자 검색" th:value="${keyword}">
-    <button type="submit">검색</button>
-</form>
 
-<table>
-    <tr>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>조회수</th>
-        <th>날짜</th>
-        <th>지역</th>
-    </tr>
-    <tr th:each="post : ${postsPage.content}">
-        <td><a th:href="@{/board/post/{id}(id=${post.rmPostId})}" th:text="${post.rmBoardTitle}"></a></td>
-        <td th:text="${post.authorName}"></td>
-        <td th:text="${post.postViews}"></td>
-        <td th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
-        <td th:text="${post.authorRegion}"></td>
-    </tr>
-</table>
+    <div class="search-container">
 
-<!-- 페이징 -->
-<div class="pagination">
-    <a th:if="${postsPage.hasPrevious()}" th:href="@{/board/rooms(page=${postsPage.number - 1}, size=${postsPage.size})}">이전</a>
-    <span th:text="${postsPage.number + 1}"></span> / <span th:text="${postsPage.totalPages}"></span>
-    <a th:if="${postsPage.hasNext()}" th:href="@{/board/rooms(page=${postsPage.number + 1}, size=${postsPage.size})}">다음</a>
-</div>
+        <!-- 카테고리 선택 -->
+        <form>
+            <select class="category-select" onchange="location = this.value;">
+                <option value="/board/rooms" selected>방 있음</option>
+                <option value="/board/no-rooms">방 없음</option>
+            </select>
+        </form>
 
-<!-- 카테고리 선택 -->
-<form>
-    <select class="category-select" onchange="location = this.value;">
-        <option value="/board/rooms" selected>방 있음</option>
-        <option value="/board/no-rooms">방 없음</option>
-    </select>
-</form>
+        <form th:action="@{/board/search}" method="get" class="search-container">
+            <input type="hidden" name="category" value="방 있음">
+            <input class="search-box" type="text" name="keyword" placeholder="제목 또는 작성자 검색" th:value="${keyword}">
+            <button type="submit" class="btn-custom">검색</button>
+        </form>
 
-<!-- 글 등록 버튼 -->
-<a th:href="@{/board/post/create}" class="write-button">글 등록</a>
+        <!-- 글 등록 버튼 -->
+        <a th:href="@{/board/post/create}" class="write-button">글 등록</a>
+
+    </div>
+
+    <!-- ✅ 카드 리스트 -->
+    <div class="post-grid">
+        <div th:each="post : ${postsPage.content}" class="post-card" th:onclick="|location.href='@{/board/post/{id}(id=${post.rmPostId})}'|">
+            <img th:src="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls) ? post.photoUrls[0] : '/images/default.jpg'}" alt="게시글 이미지">
+            <div class="post-info">
+                <div class="post-title" th:text="${post.rmBoardTitle}"></div>
+                <div class="post-price" th:text="${post.amount} + ' 만원'"></div>
+                <div class="post-location" th:text="${post.authorRegion}"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 페이징 -->
+    <div class="pagination">
+        <a th:if="${postsPage.hasPrevious()}" th:href="@{/board/rooms(page=${postsPage.number - 1}, size=${postsPage.size})}">이전</a>
+        <span th:text="${postsPage.number + 1}"></span> / <span th:text="${postsPage.totalPages}"></span>
+        <a th:if="${postsPage.hasNext()}" th:href="@{/board/rooms(page=${postsPage.number + 1}, size=${postsPage.size})}">다음</a>
+    </div>
+
+
 
 </body>
 </html>

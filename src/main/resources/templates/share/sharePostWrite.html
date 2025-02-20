@@ -3,39 +3,172 @@
 <head>
   <meta charset="UTF-8">
   <title>게시글 등록</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <style>
+    /* ✅ 전체 페이지 스타일 */
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #F8F9FA;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    /* ✅ 컨테이너 박스 */
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: 400px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #505D96;
+      margin-bottom: 20px;
+    }
+
+    /* ✅ 입력 필드 스타일 */
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    label {
+      font-size: 14px;
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+
+    textarea {
+      height: 100px;
+      resize: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: #505D96;
+      outline: none;
+      box-shadow: 0 0 5px rgba(80, 93, 150, 0.3);
+    }
+
+    /* ✅ 파일 업로드 커스텀 */
+    .file-input-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid #ccc;
+      padding: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f8f9fa;
+    }
+
+    .file-input-container:hover {
+      border-color: #505D96;
+    }
+
+    .file-input-container label {
+      cursor: pointer;
+      font-weight: bold;
+      color: #505D96;
+    }
+
+    /* ✅ 버튼 그룹 (정렬) */
+    .button-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+    }
+
+    /* ✅ 버튼 스타일 */
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: bold;
+      text-decoration: none;
+      cursor: pointer;
+      width: 80px;
+      height: 40px;
+      border: none;
+      box-sizing: border-box;
+    }
+
+    .btn-primary {
+      background-color: #505D96;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #3A4A7A;
+    }
+
+    .btn-secondary {
+      background-color: #6c757d;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background-color: #5a6268;
+    }
+  </style>
 </head>
 <body>
-<div class="container mt-5">
-  <h1 class="text-center">게시글 등록</h1>
 
-  <!-- 글 등록 폼 -->
+<div class="container">
+
+  <h1>게시글 등록</h1>
+
+  <!-- ✅ 글 등록 폼 -->
   <form th:action="@{/share/create}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="userId" th:value="${loginUser?.username}">
     <input type="hidden" name="authorName" th:value="${loginUser?.name}">
 
-    <div>
-      <label for="txnBoardTitle" class="form-label">제목:</label>
-      <input type="text" class="form-control" id="txnBoardTitle" name="txnBoardTitle" required>
+    <div class="form-group">
+      <label for="txnBoardTitle">제목</label>
+      <input type="text" id="txnBoardTitle" name="txnBoardTitle" required>
     </div>
 
-    <div>
-      <label for="txnBoardContent" class="form-label">내용:</label>
-      <textarea class="form-control" id="txnBoardContent" name="txnBoardContent" rows="5" required></textarea>
+    <div class="form-group">
+      <label for="txnBoardContent">내용</label>
+      <textarea id="txnBoardContent" name="txnBoardContent" rows="5" required></textarea>
     </div>
 
-    <!-- 여러 개의 이미지 업로드 가능 -->
-    <div>
-      <label for="photos" class="form-label">사진 업로드:</label>
-      <input type="file" class="form-control" id="photos" name="photos" accept="image/*" multiple>
+    <!-- ✅ 여러 개의 이미지 업로드 가능 -->
+    <div class="form-group">
+      <label for="photos">사진 업로드</label>
+      <input type="file" id="photos" name="photos" accept="image/*" multiple>
     </div>
 
-    <div>
-      <label for="price" class="form-label">금액:</label>
-      <input type="number" class="form-control" id="price" name="price" required>
+    <div class="form-group">
+      <label for="price">금액</label>
+      <input type="number" id="price" name="price" required>
     </div>
 
-    <div>
-      <label for="location" class="form-label">지역 선택:</label>
+    <div class="form-group">
+      <label for="location" class="form-label">지역 선택</label>
       <select class="form-select" id="location" name="location" required>
         <option value="">지역을 선택하세요</option>
         <option value="두정동">두정동</option>
@@ -60,11 +193,13 @@
       </select>
     </div>
 
-    <div>
+    <!-- ✅ 버튼 -->
+    <div class="button-container">
       <button type="submit" class="btn btn-primary">등록</button>
-      <a href="/share/list" class="btn btn-secondary ms-3">목록으로</a>
+      <a href="/share/list" class="btn btn-secondary">목록</a>
     </div>
   </form>
 </div>
+
 </body>
 </html>

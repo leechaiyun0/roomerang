@@ -3,20 +3,163 @@
 <head>
     <meta charset="UTF-8">
     <title>게시글 수정</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <style>
+        /* ✅ 전체 페이지 스타일 */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F8F9FA;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* ✅ 컨테이너 박스 */
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #505D96;
+            margin-bottom: 20px;
+        }
+
+        /* ✅ 입력 필드 스타일 */
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            height: 100px;
+            resize: none;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: #505D96;
+            outline: none;
+            box-shadow: 0 0 5px rgba(80, 93, 150, 0.3);
+        }
+
+        /* ✅ 파일 업로드 커스텀 */
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 6px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+        }
+
+        .file-input-container:hover {
+            border-color: #505D96;
+        }
+
+        .file-input-container label {
+            cursor: pointer;
+            font-weight: bold;
+            color: #505D96;
+        }
+
+        /* ✅ 버튼 그룹 (정렬) */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        /* ✅ 버튼과 찜 버튼을 같은 줄에 정렬 */
+        .button-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        /* ✅ 버튼 스타일 (크기 통일) */
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            /* transition: background 0.3s, transform 0.2s;*/
+            width: 80px;
+            height: 40px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: #505D96;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3A4A7A;
+            /* transform: translateY(-2px);*/
+        }
+
+        .btn-cancel {
+            background-color: #E74C3C;
+            color: white;
+        }
+
+        .btn-cancel:hover {
+            background-color: #C0392B;
+            /* transform: translateY(-2px);*/
+        }
+    </style>
 </head>
 <body>
 
-<div>
+<div class="container">
     <h1>게시글 수정</h1>
 
     <form th:action="@{/share/{id}/update(id=${post.txnPostId})}" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <label for="title">제목:</label>
+            <label for="title">제목</label>
             <input type="text" id="title" name="txnBoardTitle" th:value="${post.txnBoardTitle}" required>
         </div>
 
         <div class="form-group">
-            <label for="content">내용:</label>
+            <label for="content">내용</label>
             <textarea id="content" name="txnBoardContent" required th:text="${post.txnBoardContent}"></textarea>
         </div>
 
@@ -35,12 +178,12 @@
 
         <!-- 새 이미지 업로드 -->
         <div class="form-group">
-            <label for="photos">새로운 사진 업로드:</label>
+            <label for="photos">새로운 사진 업로드</label>
             <input type="file" id="photos" name="photos" accept="image/*" multiple>
         </div>
 
         <div class="form-group">
-            <label for="price">금액:</label>
+            <label for="price">금액</label>
             <input type="number" id="price" name="price" step="0.01" th:value="${post.price}" required>
         </div>
 
@@ -71,10 +214,11 @@
             </select>
         </div>
 
-        <div class="button-group">
-            <button type="submit" class="btn-custom">수정</button>
-            <button type="button" class="btn-custom btn-secondary" onclick="location.href='/share/list'">목록으로</button>
+        <div class="button-container">
+            <button type="submit" class="btn btn-primary">수정</button>
+            <a href="/share/list" class="btn btn-cancel">취소</a>
         </div>
+
     </form>
 </div>
 
