@@ -136,7 +136,7 @@
             background-color: #3A4A7A;
         }
 
-        table {
+       /* table {
             width: 90%;
             margin: 20px auto;
             border-collapse: collapse;
@@ -158,7 +158,7 @@
 
         td {
             background-color: white;
-        }
+        }*/
 
         /* ✅ 페이징 스타일 */
         .pagination {
@@ -221,6 +221,72 @@
             border-color: #3A4A7A;
         }
 
+        /* ✅ 카드 그리드 스타일 */
+        .post-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .post-card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .post-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .post-info {
+            padding: 15px;
+        }
+
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #000000;
+            margin-bottom: 10px;
+        }
+
+        .post-price {
+            font-size: 16px;
+            color: #505D96;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .post-location {
+            font-size: 14px;
+            color: #b0b0b0;
+        }
+
+        /* ✅ 글 등록 버튼 */
+        .write-button {
+            display: block;
+            width: 150px;
+            margin: 30px auto;
+            padding: 15px 20px;
+            background-color: #505D96;
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 8px;
+        }
+
 
     </style>
 </head>
@@ -237,29 +303,24 @@
     <button type="submit">검색</button>
 </form>
 
-<table>
-    <tr>
-        <th>제목</th>
-        <th>작성자</th>
-        <th>조회수</th>
-        <th>날짜</th>
-        <th>지역</th>
-    </tr>
-    <tr th:each="post : ${postsPage.content}">
-        <td><a th:href="@{/board/post/{id}(id=${post.rmPostId})}" th:text="${post.rmBoardTitle}"></a></td>
-        <td th:text="${post.authorName}"></td>
-        <td th:text="${post.postViews}"></td>
-        <td th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></td>
-        <td th:text="${post.authorRegion}"></td>
-    </tr>
-</table>
+    <!-- ✅ 카드 리스트 -->
+    <div class="post-grid">
+        <div th:each="post : ${postsPage.content}" class="post-card" th:onclick="|location.href='@{/board/post/{id}(id=${post.rmPostId})}'|">
+            <img th:src="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls) ? post.photoUrls[0] : '/images/default.jpg'}" alt="게시글 이미지">
+            <div class="post-info">
+                <div class="post-title" th:text="${post.rmBoardTitle}"></div>
+                <div class="post-price" th:text="${post.amount} + ' 만원'"></div>
+                <div class="post-location" th:text="${post.authorRegion}"></div>
+            </div>
+        </div>
+    </div>
 
-<!-- 페이징 -->
-<div class="pagination">
-    <a th:if="${postsPage.hasPrevious()}" th:href="@{/board/rooms(page=${postsPage.number - 1}, size=${postsPage.size})}">이전</a>
-    <span th:text="${postsPage.number + 1}"></span> / <span th:text="${postsPage.totalPages}"></span>
-    <a th:if="${postsPage.hasNext()}" th:href="@{/board/rooms(page=${postsPage.number + 1}, size=${postsPage.size})}">다음</a>
-</div>
+    <!-- 페이징 -->
+    <div class="pagination">
+        <a th:if="${postsPage.hasPrevious()}" th:href="@{/board/rooms(page=${postsPage.number - 1}, size=${postsPage.size})}">이전</a>
+        <span th:text="${postsPage.number + 1}"></span> / <span th:text="${postsPage.totalPages}"></span>
+        <a th:if="${postsPage.hasNext()}" th:href="@{/board/rooms(page=${postsPage.number + 1}, size=${postsPage.size})}">다음</a>
+    </div>
 
 <!-- 카테고리 선택 -->
 <form>
