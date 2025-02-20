@@ -288,40 +288,32 @@
         </form>
       </th:block>
 
-      <!-- ✅ 찜 버튼 (크기 통일) -->
-      <div class="wishlist"></div>
-      <img id="favoriteButton" src="/images/binH.png" alt="찜" class="wishlist" data-post-id="10">
+      <!-- ✅ 찜 버튼 (기본: binH.png, 찜된 상태: fullH.png) -->
+      <div class="wishlist">
+        <img id="favorite-img" th:src="@{/images/binH.png}" alt="찜" class="wishlist" onclick="toggleFavorite()">
       </div>
 
-</div>
+      <script>
+        function toggleFavorite() {
+            var userId = "현재 로그인된 사용자 ID"; // 실제 로그인된 사용자 ID로 대체
+            var postId = "현재 게시글 ID"; // 실제 게시글 ID로 대체
+            var postType = "MATCH"; // 현재 페이지에 맞게 변경
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function() {
-        const favoriteButton = document.getElementById("favoriteButton");
-
-        favoriteButton.addEventListener("click", function() {
-          const postId = favoriteButton.getAttribute("data-post-id");
-          const userId = 1; // 실제 로그인된 사용자 ID로 변경해야 함
-
-          fetch(`/api/favorites/toggle?userId=${userId}&postId=${postId}`, {
-            method: "POST",
-          })
-                  .then(response => response.text())
-                  .then(data => {
-                    alert(data); // "관심글이 업데이트되었습니다." 메시지 표시
-
-                    // 이미지 상태 업데이트 (binH <-> fullH)
-                    if (favoriteButton.src.includes("binH.png")) {
-                      favoriteButton.src = "/images/fullH.png";
-                    } else {
-                      favoriteButton.src = "/images/binH.png";
-                    }
-                  })
-                  .catch(error => console.error("에러 발생:", error));
-        });
-      });
-    </script>
-
+            fetch('/favorite/toggle?userId=' + userId + '&postId=' + postId + '&postType=' + postType, {
+                method: 'POST'
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // "등록되었습니다." 또는 "등록 취소되었습니다."
+                var img = document.getElementById("favorite-img");
+                if (img.src.includes("binH.png")) {
+                    img.src = "/images/fullH.png"; // 찜 등록 상태로 변경
+                } else {
+                    img.src = "/images/binH.png"; // 찜 해제 상태로 변경
+                }
+            });
+        }
+      </script>
 
   <!-- 📌 이미지 확대 모달 -->
   <div id="imageModal">

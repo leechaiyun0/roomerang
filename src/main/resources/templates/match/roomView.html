@@ -46,6 +46,10 @@
         /* ✅ 제목 스타일 */
         h1 {
             text-align: center;
+            text-align: left;
+            font-size: 30px; /* 크기 키움 */
+            font-weight: bold;
+            margin-bottom: 10px;
         }
 
         /* ✅ 버튼과 찜 버튼을 같은 줄에 정렬 */
@@ -137,18 +141,128 @@
 
         /* ✅ 이미지 크기 줄이기 */
         .image-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
+            flex-wrap: nowrap;
+            overflow-x: auto;
+            gap: 15px;
+            justify-content: flex-start; /* 왼쪽 정렬 */
+            margin-top: 10px;
+            max-width: 500px;
         }
 
         .image-container img {
-            max-width: 400px; /* 이미지 크기 줄임 */
+            width: 400px; /* 이미지 크기 고정 */
+            height: auto;
             border-radius: 8px;
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            /*transition: transform 0.2s;*/
+        }
+
+        /* ✅ 전체 컨테이너 크기 조정 */
+        div {
+            max-width: 1100px;
+            width: 90%;
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items : center;
+        }
+
+        .post-content {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            font-weight: normal;
+            line-height: 1.5;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            width: 100%;
+            max-width: 600px;
+        }
+        .preference-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: nowrap;
+            align-items: center;
+            justify-content: flex-start;
+            padding-bottom: 5px;
+        }
+
+        .preference-container span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            border: 1px solid #ddd;
+            background: #f8f9fa;
+        }
+
+        /* ✅ 게시글 내용 스타일 */
+        pre {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 18px;
+            font-weight: normal;
+            line-height: 1.7;
+            text-align: left;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+
+        .btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            width: 100px;
+            height: 40px;
+            border: none;
+            box-sizing: border-box;
+        }
+
+        .btn-primary {
+            background-color: #505D96;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #3A4A7A;
+        }
+
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+        }
+
+        .post-info, .post-price {
+            display: flex;
+            justify-content: space-between;
+            font-size: 16px;
+            color: #666;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 10px;
         }
 
     </style>
@@ -177,8 +291,8 @@
          <span th:text="${post.postViews}"></span>
          <span th:text="${#temporals.format(post.postDate, 'yyyy-MM-dd HH:mm')}"></span></p>
 
-    <p class="post-info">
-        금액: <span th:text="${post.amount}"></span> 만원
+    <p class="post-price">
+        월세: <span th:text="${post.amount}"></span> 만원
         보증금: <span th:text="${post.deposit}"></span> 만원</p>
 
     <!-- ✅ 게시글 내용 -->
@@ -200,37 +314,39 @@
             </form>
         </th:block>
 
-        <!-- ✅ 찜 버튼 (크기 통일) -->
-        <div class="wishlist"></div>
-        <img id="favoriteButton" src="/images/binH.png" alt="찜" class="wishlist" data-post-id="10">
-    </div>
+        <div class="preference-container">
+            <span th:if="${post.smoking}">흡연</span>
+            <span th:if="${post.pets}">반려동물</span>
+            <span th:if="${post.lifestyle == 'morning'}">아침형 인간</span>
+            <span th:if="${post.lifestyle == 'night'}">밤형 인간</span>
+        </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const favoriteButton = document.getElementById("favoriteButton");
+        <!-- ✅ 찜 버튼 (기본: binH.png, 찜된 상태: fullH.png) -->
+        <div class="wishlist">
+            <img id="favorite-img" th:src="@{/images/binH.png}" alt="찜" class="wishlist" onclick="toggleFavorite()">
+        </div>
 
-            favoriteButton.addEventListener("click", function() {
-                const postId = favoriteButton.getAttribute("data-post-id");
-                const userId = 1; // 실제 로그인된 사용자 ID로 변경해야 함
+        <script>
+            function toggleFavorite() {
+                var userId = "현재 로그인된 사용자 ID"; // 실제 로그인된 사용자 ID로 대체
+                var postId = "현재 게시글 ID"; // 실제 게시글 ID로 대체
+                var postType = "MATCH"; // 현재 페이지에 맞게 변경
 
-                fetch(`/api/favorites/toggle?userId=${userId}&postId=${postId}`, {
-                    method: "POST",
+                fetch('/favorite/toggle?userId=' + userId + '&postId=' + postId + '&postType=' + postType, {
+                    method: 'POST'
                 })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data); // "관심글이 업데이트되었습니다." 메시지 표시
-
-                        // 이미지 상태 업데이트 (binH <-> fullH)
-                        if (favoriteButton.src.includes("binH.png")) {
-                            favoriteButton.src = "/images/fullH.png";
-                        } else {
-                            favoriteButton.src = "/images/binH.png";
-                        }
-                    })
-                    .catch(error => console.error("에러 발생:", error));
-            });
-        });
-    </script>
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // "등록되었습니다." 또는 "등록 취소되었습니다."
+                    var img = document.getElementById("favorite-img");
+                    if (img.src.includes("binH.png")) {
+                        img.src = "/images/fullH.png"; // 찜 등록 상태로 변경
+                    } else {
+                        img.src = "/images/binH.png"; // 찜 해제 상태로 변경
+                    }
+                });
+            }
+        </script>
 
 </div>
 

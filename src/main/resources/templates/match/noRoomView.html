@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>글 상세 조회</title>
@@ -110,7 +112,7 @@
             width: 40px;
             height: 40px;
             cursor: pointer;
-           /* transition: transform 0.2s ease-in-out;*/
+            /* transition: transform 0.2s ease-in-out;*/
         }
 
         .wishlist:hover {
@@ -140,6 +142,9 @@
 
 <body>
 
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
+
 <div>
 
     <!-- ✅ 제목 -->
@@ -154,7 +159,7 @@
     <p class="post-info .p1">작성자: <span th:text="${post.authorName}"></span>
         <span th:text="${post.authorRegion}"></span>
         <span th:text="${post.postViews}"></span>
-        </p>
+    </p>
 
     <!-- ✅ 게시글 내용 -->
     <pre th:text="${post.postContent}"></pre>
@@ -172,45 +177,39 @@
         <a href="/board/no-rooms" class="btn btn-secondary">목록</a>
 
         <th:block th:if="${loginUser != null and loginUser.username == post.userId}">
-            <form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post"
-                  onsubmit="return confirm('정말 삭제하시겠습니까?');" style="display: inline;">
+            <form th:action="@{/board/post/delete/{id}(id=${post.rmPostId})}" method="post" style="display:inline;">
                 <button type="submit" class="btn btn-danger">삭제</button>
             </form>
         </th:block>
 
-        <!-- ✅ 찜 버튼 (크기 통일) -->
-        <div class="wishlist"></div>
-        <img th:src="@{/images/binH.png}" alt="찜" class="wishlist" data-post-id="10">
-    </div>
+        <!-- ✅ 찜 버튼 (기본: binH.png, 찜된 상태: fullH.png) -->
+        <div class="wishlist">
+            <img id="favorite-img" th:src="@{/images/binH.png}" alt="찜" class="wishlist" onclick="toggleFavorite()">
+        </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const favoriteButton = document.getElementById("favoriteButton");
+        <script>
+            function toggleFavorite() {
+                var userId = "현재 로그인된 사용자 ID"; // 실제 로그인된 사용자 ID로 대체
+                var postId = "현재 게시글 ID"; // 실제 게시글 ID로 대체
+                var postType = "MATCH"; // 현재 페이지에 맞게 변경
 
-            favoriteButton.addEventListener("click", function() {
-                const postId = favoriteButton.getAttribute("data-post-id");
-                const userId = 1; // 실제 로그인된 사용자 ID로 변경해야 함
-
-                fetch(`/api/favorites/toggle?userId=${userId}&postId=${postId}`, {
-                    method: "POST",
+                fetch('/favorite/toggle?userId=' + userId + '&postId=' + postId + '&postType=' + postType, {
+                    method: 'POST'
                 })
-                    .then(response => response.text())
-                    .then(data => {
-                        alert(data); // "관심글이 업데이트되었습니다." 메시지 표시
+                .then(response => response.text())
+                .then(data => {
+                    alert(data); // "등록되었습니다." 또는 "등록 취소되었습니다."
+                    var img = document.getElementById("favorite-img");
+                    if (img.src.includes("binH.png")) {
+                        img.src = "/images/fullH.png"; // 찜 등록 상태로 변경
+                    } else {
+                        img.src = "/images/binH.png"; // 찜 해제 상태로 변경
+                    }
+                });
+            }
+        </script>
 
-                        // 이미지 상태 업데이트 (binH <-> fullH)
-                        if (favoriteButton.src.includes("binH.png")) {
-                            favoriteButton.src = "/images/fullH.png";
-                        } else {
-                            favoriteButton.src = "/images/binH.png";
-                        }
-                    })
-                    .catch(error => console.error("에러 발생:", error));
-            });
-        });
-    </script>
-
-</div>
+    </div>
 
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.roomerang.contoller;
 
+import com.roomerang.entity.Post;
 import com.roomerang.entity.SharePost;
 import com.roomerang.entity.User;
 import com.roomerang.service.SharePostService;
@@ -8,6 +9,8 @@ import com.roomerang.util.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -159,13 +162,21 @@ public class SharePostController {
 
     //게시글 검색
     @GetMapping("/search")
-    public String searchPosts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+    public String searchPosts(@RequestParam(name = "keyword", required = false) String keyword,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "size", defaultValue = "10") int size,
                               Model model, HttpServletRequest request) {
-        List<SharePost> posts = sharePostService.searchPosts(keyword);
-        User loginUser = getLoginUser(request);
+        Pageable pageable = PageRequest.of(page, size);
 
-        model.addAttribute("posts", posts);
+        Page<SharePost> postPage=sharePostService.searchPosts(keyword, pageable);
+        User loginUser=getLoginUser(request);
+
+        model.addAttribute("postPage", postPage);
+        model.addAttribute("posts", postPage.getContent());
+        model.addAttribute("currentPage", page);
+        model.addAttribute("totalPages", postPage.getTotalPages());
         model.addAttribute("loginUser", loginUser);
+
         return "share/sharePostList";
     }
 }

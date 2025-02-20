@@ -32,11 +32,11 @@ public class SharePostService {
         return sharePostRepository.findAll(pageable);
     }
 
-    public List<SharePost> searchPosts(String keyword) {
+    public Page<SharePost> searchPosts(String keyword, Pageable pageable) {
         if (keyword == null || keyword.trim().isEmpty()) {
-            return sharePostRepository.findAll();
+            return sharePostRepository.findAll(pageable);
         }
-        return sharePostRepository.findByTxnBoardTitleContaining(keyword);
+        return sharePostRepository.findByTxnBoardTitleContaining(keyword, pageable);
     }
 
     public SharePost getPostById(Long id) {
