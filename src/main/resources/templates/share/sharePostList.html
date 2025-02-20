@@ -235,7 +235,7 @@
 
     <!-- 검색 & 글쓰기 -->
     <div class="search-container">
-        <form th:action="@{/share/search}" method="post" class="search-container">
+        <form th:action="@{/share/search}" method="get" class="search-container">
             <input type="text" name="keyword" placeholder="제목 또는 작성자 검색" class="search-box">
             <button type="submit" class="btn-custom">검색</button>
         </form>

@@ -42,8 +42,9 @@ public class SecurityConfig {
                 // URL 별 접근 권한 설정
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/css/**", "/js/**", "/images/**").permitAll()
-                        .requestMatchers("/board/**", "/share/**", "/favorites/**").permitAll()
+                        .requestMatchers("/board/**", "/share/**").permitAll()
                         .requestMatchers("/uploads/**").permitAll() // 업로드된 파일 경로 허용
+                        .requestMatchers("/favorites/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/", "/auth/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
                         .anyRequest().authenticated()

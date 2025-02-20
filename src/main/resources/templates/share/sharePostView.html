@@ -191,11 +191,10 @@
     }
 
     .image-box img {
-      width: 90%;
-      height: auto;
-      max-height: 400px;
+      width: 600px; /* 원하는 고정 너비 */
+      height: 400px; /* 원하는 고정 높이 */
       border-radius: 10px;
-      object-fit: cover;
+      object-fit: cover; /* 이미지 비율 유지하며 넘치는 부분 자르기 */
       cursor: pointer;
     }
 
@@ -248,12 +247,16 @@
   <div class="image-box">
     <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
       <img th:src="@{${post.photoUrls[0]}}" alt="게시글 이미지" id="mainImage">
+
       <div class="arrow arrow-left" onclick="prevImage()">&#10094;</div>
       <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
     </div>
 
-    <div th:if="${post.photoUrls == null or #lists.isEmpty(post.photoUrls)}">
+    <!--<div th:if="${post.photoUrls == null or #lists.isEmpty(post.photoUrls)}">
       <img src="/images/default.jpg" alt="기본 이미지">
+    </div>-->
+    <div id="imageList" style="display: none;">
+      <span th:each="photoUrl : ${post.photoUrls}" th:data-image="${photoUrl}"></span>
     </div>
 
   </div>
@@ -265,6 +268,8 @@
     <br>
     <span class="price-box" th:text="|금액 ${post.price}|"></span>
   </div>
+
+
 
     <!-- ✅ 버튼 그룹 -->
     <div class="button-container">
@@ -287,6 +292,8 @@
       <div class="wishlist"></div>
       <img id="favoriteButton" src="/images/binH.png" alt="찜" class="wishlist" data-post-id="10">
       </div>
+
+</div>
 
     <script>
       document.addEventListener("DOMContentLoaded", function() {
@@ -351,56 +358,34 @@
     });
   </script>
 
+  <!-- ✅ 이미지 변경을 위한 JavaScript -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      let currentIndex = 0; // 현재 이미지 인덱스
-      let images = []; // 이미지 URL 배열
+      let currentIndex = 0;
+      const mainImage = document.getElementById("mainImage");
+      const imageElements = document.querySelectorAll("#imageList span");
 
-      // 📌 Thymeleaf를 이용하여 JavaScript에서 이미지 URL 배열 가져오기
-      images = [[${post.photoUrls}]] [];
+      // ✅ 이미지 URL 리스트 가져오기
+      let images = Array.from(imageElements).map(span => span.getAttribute("data-image"));
 
-      let mainImage = document.getElementById("mainImage");
-      let leftArrow = document.querySelector(".arrow-left");
-      let rightArrow = document.querySelector(".arrow-right");
-
-      // 📌 기본 이미지 설정
+      // ✅ 기본 이미지 설정
       if (images.length > 0) {
-        mainImage.src = images[0]; // 첫 번째 이미지 설정
-        currentIndex = 0;
-      } else {
-        mainImage.src = "/images/default.jpg"; // 기본 이미지
-        leftArrow.style.display = "none";
-        rightArrow.style.display = "none";
+        mainImage.src = images[currentIndex];
       }
 
-      // 📌 이미지 변경 함수
-      function changeImage(index) {
-        mainImage.style.opacity = "0"; // 페이드아웃 효과
-        setTimeout(() => {
-          mainImage.src = images[index];
-          mainImage.style.opacity = "1"; // 페이드인 효과
-        }, 300);
-      }
-
-      // 📌 이전 이미지
+      // ✅ 이전 이미지 보기
       window.prevImage = function () {
         if (images.length === 0) return;
         currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
-        changeImage(currentIndex);
+        mainImage.src = images[currentIndex];
       };
 
-      // 📌 다음 이미지
+      // ✅ 다음 이미지 보기
       window.nextImage = function () {
         if (images.length === 0) return;
         currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
-        changeImage(currentIndex);
+        mainImage.src = images[currentIndex];
       };
-
-      // 📌 이미지 한 개만 있을 경우 화살표 숨김
-      if (images.length <= 1) {
-        leftArrow.style.display = "none";
-        rightArrow.style.display = "none";
-      }
     });
   </script>
 </body>
