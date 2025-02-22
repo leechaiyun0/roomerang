@@ -85,11 +85,8 @@
         }
 
         .user-menu {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
+            font-weight: bold;
+            color: #505D96;
         }
 
         .user-menu img {
@@ -107,6 +104,7 @@
             border-radius: 5px;
             min-width: 150px;
             z-index: 10;
+            margin-top: 40px;
         }
 
         .dropdown-content a {
@@ -386,7 +384,7 @@
             margin-top: 10px;
         }
         .modal-content p{
-            font-size: boldpx;
+            font-size: 20px;
             font-weight: bold;
             color: black;
             line-height: 1.6;
@@ -510,23 +508,24 @@
         <img th:src="@{/images/logo.png}" alt="룸메랑 로고">
     </div>
     <div class="nav-links">
-        <a th:href="@{/board/rooms}">🏠 매칭해방</a>
-        <a th:href="@{/share/list}">🎁 나눔해방</a>
+        <a th:href="@{/board/rooms}">매칭해방</a>
+        <a th:href="@{/share/list}">나눔해방</a>
     </div>
 
     <div class="header-right">
         <div class="icons">
             <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
             <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
-            <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
+            <a th:href="@{/users/myInfo(id=${loginUser.id})}">
+            <img th:src="@{/images/my-page.png}" alt="내정보"></a>
         </div>
 
         <div class="user-menu">
             <span th:text="${loginUser.name} + '님'" class="username"></span>
             <img th:src="@{/images/plus.png}" alt="더보기" class="toggle-button">
             <div class="dropdown-content">
-                <a href="#">내 정보</a>
-                <a href="#">관심 목록</a>
+                <a th:href="@{/users/myInfo(id=${loginUser.id})}">내 정보</a>
+                <a th:href="@{/favorites/list(userId=${session.loginUser.id})}">관심 목록</a>
                 <a href="#">리뷰 보기</a>
                 <a href="#" onclick="document.getElementById('logoutForm').submit(); return false;">로그아웃</a>
                 <form id="logoutForm" th:action="@{/auth/logout}" method="post" style="display: none;"></form>

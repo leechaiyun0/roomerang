@@ -1,5 +1,6 @@
 package com.roomerang.service;
 
+import com.roomerang.dto.UserDTO;
 import com.roomerang.dto.request.UserCreateRequest;
 import com.roomerang.dto.request.UserFindRequest;
 import com.roomerang.dto.response.UserFindResponse;
@@ -176,5 +177,25 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return true;
     }
+
+    @Override
+    public UserDTO showUserInfo(Long id) {
+        Optional<User> result = userRepository.findById(id);
+
+        return result.isPresent() ? entityToDto(result.get()) : null;
+    }
+
+    @Override
+    public boolean remove(Long id) {
+        if (userRepository.existsById(id)) {
+            userRepository.deleteById(id); // DB에서 회원 삭제
+        } else {
+            throw new RuntimeException("회원이 존재하지 않습니다.");
+        }
+        return false;
+    }
+
+
+
 }
 

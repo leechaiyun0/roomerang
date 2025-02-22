@@ -1,5 +1,10 @@
 /* ✅ 네비게이션 바 스타일 */
 .navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000; /* 다른 요소 위에 오도록 설정 */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -74,6 +79,7 @@
     border-radius: 5px;
     min-width: 150px;
     z-index: 10;
+    margin-top: 40px;
 }
 
 .dropdown-content a {

@@ -8,6 +8,8 @@ import com.roomerang.util.SessionConst;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -159,13 +161,22 @@ public class SharePostController {
 
     //게시글 검색
     @GetMapping("/search")
-    public String searchPosts(@RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
+    public String searchPosts(@RequestParam(name = "keyword", required = false) String keyword,
+                              @RequestParam(name = "page", defaultValue = "0") int page,
+                              @RequestParam(name = "size", defaultValue = "10") int size,
                               Model model, HttpServletRequest request) {
-        List<SharePost> posts = sharePostService.searchPosts(keyword);
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<SharePost> postPage = sharePostService.searchPosts(keyword, pageable);
         User loginUser = getLoginUser(request);
 
-        model.addAttribute("posts", posts);
+        model.addAttribute("postPage", postPage);
+        model.addAttribute("posts", postPage.getContent());
+        model.addAttribute("keyword", keyword);
         model.addAttribute("loginUser", loginUser);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
+
         return "share/sharePostList";
     }
 }

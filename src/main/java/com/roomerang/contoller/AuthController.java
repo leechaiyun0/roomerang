@@ -11,9 +11,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -23,7 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -293,8 +291,13 @@ public class AuthController {
         return "auth/reset-password-success"; // 비밀번호 변경 성공 후 로그인 페이지로 리다이렉트
     }
 
-   /* @GetMapping("/aaa")
-    public void aaa(){
-        log.info("aaa");
-    }*/
+    @GetMapping("/deleteId")
+    public String userDeleted(Long id, Model model) {
+
+        model.addAttribute("id", id);
+        return "auth/deleteIdForm";
+
+    }
+
+
 }

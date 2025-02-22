@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface SharePostRepository extends JpaRepository<SharePost, Long> {
-    List<SharePost> findByTxnBoardTitleContaining(String keyword);
+    Page<SharePost> findByTxnBoardTitleContaining(String keyword, Pageable pageable);
 
     Page<SharePost> findAll(Pageable pageable);
 }

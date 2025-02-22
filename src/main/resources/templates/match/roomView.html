@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
     <meta charset="UTF-8">
     <title>글 상세 조회</title>
@@ -26,21 +28,6 @@
             word-wrap: break-word;
             text-align: left;
             font-size: 15px;
-        }
-
-        /* ✅ 게시글 내용 (박스 처리 + 가운데 정렬) */
-        .post-content {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-            font-size: 20px;
-            font-weight: bold;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            text-align: center;
-            margin: 20px auto;
-            max-width: 700px;
         }
 
         /* ✅ 제목 스타일 */
@@ -135,15 +122,6 @@
             margin: 10px 0;
         }
 
-        /* ✅ 이미지 크기 줄이기 */
-        .image-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
         .image-container img {
             max-width: 400px; /* 이미지 크기 줄임 */
             border-radius: 8px;
@@ -151,25 +129,116 @@
             /*transition: transform 0.2s;*/
         }
 
+        /* 📌 모달 스타일 */
+        #imageModal {
+            display: none; /* 기본적으로 숨김 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        /* 📌 모달 내부 이미지 */
+        #imageModal img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        /* 📌 닫기 버튼 스타일 */
+        #closeModal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+
+        /* 📌 이미지 박스 */
+        .image-box {
+            position: relative;
+            display: flex;
+            justify-content: center;
+        }
+
+        .image-box img {
+            width: 600px; /* 원하는 고정 너비 */
+            height: 400px; /* 원하는 고정 높이 */
+            border-radius: 10px;
+            object-fit: cover; /* 이미지 비율 유지하며 넘치는 부분 자르기 */
+            cursor: pointer;
+        }
+
+        #closeModal {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 30px;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* 📌 화살표 스타일 */
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 20px;
+            user-select: none;
+            transition: background 0.3s;
+        }
+
+        .arrow-left {
+            left: 10px;
+        }
+
+        .arrow-right {
+            right: 10px;
+        }
+
+        .arrow:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+
     </style>
 </head>
 
 <body>
 
-<div>
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
 
     <!-- ✅ 제목 -->
-    <h1 th:text="${post.rmBoardTitle}"></h1>
+    <h1 class="post-title" th:text="${post.rmBoardTitle}"></h1>
 
-    <!-- ✅ 첨부된 사진 -->
-    <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+    <!-- 이미지 슬라이드 -->
+    <div class="image-box">
+        <div th:if="${post.photoUrls != null and not #lists.isEmpty(post.photoUrls)}">
+            <img th:src="@{${post.photoUrls[0]}}" alt="게시글 이미지" id="mainImage">
 
-        <div class="image-container">
-            <th:block th:each="photoUrl : ${post.photoUrls}">
-                <img th:src="@{${photoUrl}}" alt="게시글 이미지">
-            </th:block>
+            <!-- 화살표 버튼 -->
+            <div class="arrow arrow-left" onclick="prevImage()">&#10094;</div>
+            <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
+        </div>
+
+        <!-- 이미지 리스트 (데이터 저장용, 화면에는 안 보임) -->
+        <div id="imageList" style="display: none;">
+            <span th:each="photoUrl : ${post.photoUrls}" th:data-image="${photoUrl}"></span>
         </div>
     </div>
+
 
     <!-- ✅ 게시글 정보 -->
     <p class="post-info">작성자: <span th:text="${post.authorName}"></span>
@@ -231,6 +300,72 @@
             });
         });
     </script>
+    <!-- 📌 이미지 확대 모달 -->
+    <div id="imageModal">
+        <span id="closeModal">&times;</span>
+        <img id="modalImage">
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const modal = document.getElementById("imageModal");
+            const modalImg = document.getElementById("modalImage");
+            const closeModal = document.getElementById("closeModal");
+            const images = document.querySelectorAll(".image-box img"); // 모든 이미지 선택
+
+            // 📌 이미지 클릭 시 확대 모달 열기
+            images.forEach(image => {
+                image.addEventListener("click", function () {
+                    modal.style.display = "flex";
+                    modalImg.src = this.src;
+                });
+            });
+
+            // 📌 모달 닫기
+            closeModal.addEventListener("click", function () {
+                modal.style.display = "none";
+            });
+
+            // 📌 모달 바깥을 클릭하면 닫기
+            modal.addEventListener("click", function (event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+    </script>
+
+    <!-- ✅ 이미지 변경을 위한 JavaScript -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            let currentIndex = 0;
+            const mainImage = document.getElementById("mainImage");
+            const imageElements = document.querySelectorAll("#imageList span");
+
+            // ✅ 이미지 URL 리스트 가져오기
+            let images = Array.from(imageElements).map(span => span.getAttribute("data-image"));
+
+            // ✅ 기본 이미지 설정
+            if (images.length > 0) {
+                mainImage.src = images[currentIndex];
+            }
+
+            // ✅ 이전 이미지 보기
+            window.prevImage = function () {
+                if (images.length === 0) return;
+                currentIndex = (currentIndex === 0) ? images.length - 1 : currentIndex - 1;
+                mainImage.src = images[currentIndex];
+            };
+
+            // ✅ 다음 이미지 보기
+            window.nextImage = function () {
+                if (images.length === 0) return;
+                currentIndex = (currentIndex === images.length - 1) ? 0 : currentIndex + 1;
+                mainImage.src = images[currentIndex];
+            };
+        });
+    </script>
+
 
 </div>
 

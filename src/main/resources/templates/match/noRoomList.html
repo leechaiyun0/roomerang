@@ -16,84 +16,6 @@
       background-color: #F8F9FA;
     }
 
-    /* ✅ 네비게이션 바 스타일 */
-    .navbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background-color: white;
-      padding: 20px 50px;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    .logo img {
-      height: 60px;
-    }
-
-    .nav-links {
-      display: flex;
-      justify-content: center;
-      flex-grow: 1;
-      gap: 50px;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #777E90;
-      font-weight: bold;
-      font-size: 20px;
-    }
-
-    .nav-links a:hover {
-      color: #505D96;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 35px;
-    }
-
-    .icons img {
-      width: 30px;
-      cursor: pointer;
-    }
-
-    .user-menu {
-      position: relative;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      cursor: pointer;
-    }
-
-    .user-menu img {
-      width: 20px;
-    }
-
-    .dropdown-content {
-      display: none;
-      position: absolute;
-      right: 0;
-      top: 40px;
-      background-color: white;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      border-radius: 5px;
-      min-width: 150px;
-      z-index: 10;
-    }
-
-    .dropdown-content a {
-      display: block;
-      padding: 10px;
-      text-decoration: none;
-      color: #777E90;
-    }
-
-    .dropdown-content a:hover {
-      background-color: #f1f1f1;
-    }
-
     /* ✅ 방 없음 목록 스타일 */
     h1 {
       text-align: center;
@@ -110,8 +32,9 @@
     .search-container {
       display: flex;             /* 가로 정렬 */
       justify-content: center;   /* 가운데 정렬 */
-      /*align-items: center;*/       /* 세로 중앙 정렬 */
+      align-items: center;       /* 세로 중앙 정렬 */
       gap: 10px;                 /* 요소 간 간격 */
+      margin-top: 20px;
     }
 
     /* ✅ 검색창 스타일 */
@@ -170,6 +93,7 @@
       align-items: center;       /* 세로 중앙 정렬 */
       box-sizing: border-box;    /* 패딩 포함한 크기 유지 */
       transition: border-color 0.3s;
+      margin-top: 20px;
     }
 
     .category-select:hover {

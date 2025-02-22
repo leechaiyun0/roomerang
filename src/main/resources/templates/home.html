@@ -385,7 +385,7 @@
             margin-top: 10px;
         }
         .modal-content p{
-            font-size: boldpx;
+            font-size: 20px;
             font-weight: bold;
             color: black;
             line-height: 1.6;
@@ -510,14 +510,15 @@
         </a>
     </div>
     <div class="nav-links">
-        <a th:href="@{/board/rooms}">🏠 매칭해방</a>
-        <a th:href="@{/share/list}">🎁 나눔해방</a>
+        <a th:href="@{/board/rooms}">매칭해방</a>
+        <a th:href="@{/share/list}">나눔해방</a>
     </div>
     <div class="header-right">
         <div class="icons">
             <a href="#"><img th:src="@{/images/chat.png}" alt="채팅"></a>
             <a href="#"><img th:src="@{/images/alarm.png}" alt="알림"></a>
-            <a href="#"><img th:src="@{/images/my-page.png}" alt="내정보"></a>
+            <a href="#" th:if="${loginUser == null}" onclick="alert('로그인 후 이용해주세요'); return false;">
+                <img th:src="@{/images/my-page.png}" alt="내정보" style="display: inline"></a>
         </div>
         <div class="user-actions">
             <a th:href="@{/auth/login}">로그인</a>

@@ -1,5 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="ko">
+<html xmlns:th="http://www.thymeleaf.org" lang="ko"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
 <head>
   <meta charset="UTF-8">
   <title>게시글 상세 보기</title>
@@ -26,21 +28,6 @@
       word-wrap: break-word;
       text-align: left;
       font-size: 15px;
-    }
-
-    /* ✅ 게시글 내용 (박스 처리 + 가운데 정렬) */
-    .post-content {
-      background-color: #f8f9fa;
-      padding: 15px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      font-size: 20px;
-      font-weight: bold;
-      word-wrap: break-word;
-      white-space: pre-wrap;
-      text-align: center;
-      margin: 20px auto;
-      max-width: 700px;
     }
 
     /* ✅ 제목 스타일 */
@@ -124,24 +111,6 @@
 
     .wishlist:hover {
       transform: scale(1.1);
-    }
-
-    /* ✅ 게시글 정보 가운데 정렬 */
-    .post-info {
-      text-align: center;
-      font-size: 16px;
-      color: #333;
-      font-weight: bold;
-      margin: 10px 0;
-    }
-
-    /* ✅ 이미지 크기 줄이기 */
-    .image-container {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 15px;
     }
 
     .image-container img {
@@ -238,6 +207,9 @@
 </head>
 <body>
 
+<!-- 🌟 메인 콘텐츠 -->
+<div layout:fragment="content">
+
 <div class="container">
 
   <!-- 📌 제목 -->
@@ -252,13 +224,9 @@
       <div class="arrow arrow-right" onclick="nextImage()">&#10095;</div>
     </div>
 
-    <!--<div th:if="${post.photoUrls == null or #lists.isEmpty(post.photoUrls)}">
-      <img src="/images/default.jpg" alt="기본 이미지">
-    </div>-->
     <div id="imageList" style="display: none;">
       <span th:each="photoUrl : ${post.photoUrls}" th:data-image="${photoUrl}"></span>
     </div>
-
   </div>
 
   <!-- 📌 게시글 정보 -->

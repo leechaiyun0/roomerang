@@ -2,6 +2,7 @@ package com.roomerang.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.Period;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "users")
 public class User {
@@ -37,7 +39,7 @@ public class User {
     @Column(name = "security_question", nullable = false)
     private String securityQuestion;
 
-    @Column(name = "security_answer")
+    @Column(name = "security_answer" , nullable = false)
     private String securityAnswer;
     private String password;
 
