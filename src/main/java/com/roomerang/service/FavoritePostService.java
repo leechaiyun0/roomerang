@@ -8,44 +8,44 @@ import com.roomerang.repository.FavoritePostRepository;
 import com.roomerang.repository.PostRepository;
 import com.roomerang.repository.SharePostRepository;
 import com.roomerang.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
+@Log4j2
 @Service
-@RequiredArgsConstructor
 public class FavoritePostService {
 
     private final FavoritePostRepository favoritePostRepository;
-    private final UserRepository userRepository;
-    private final PostRepository postRepository;
-    private final SharePostRepository sharePostRepository;
+
+    public FavoritePostService(FavoritePostRepository favoritePostRepository) {
+        this.favoritePostRepository = favoritePostRepository;
+    }
 
     @Transactional
-    public void toggleFavorite(Long userId, Long postId, Long sharePostId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
+    public String toggleFavorite(String userId, Long postId, String postType) {
+        log.info("toggleFavorite 호출됨 - userId: {}, postId: {}, postType: {}", userId, postId, postType);
 
-        if (postId != null) {
-            Post post = postRepository.findById(postId).orElseThrow(() -> new RuntimeException("Post not found"));
-            if (favoritePostRepository.existsByUserIdAndPost_RmPostId(userId, postId)) {
-                favoritePostRepository.deleteByUserIdAndPost_RmPostId(userId, postId);
-            } else {
-                favoritePostRepository.save(new FavoritePost(user, post));
-            }
-        } else if (sharePostId != null) {
-            SharePost sharePost = sharePostRepository.findById(sharePostId).orElseThrow(() -> new RuntimeException("SharePost not found"));
-            if (favoritePostRepository.existsByUserIdAndSharePost_TxnPostId(userId, sharePostId)) {
-                favoritePostRepository.deleteByUserIdAndSharePost_TxnPostId(userId, sharePostId);
-            } else {
-                favoritePostRepository.save(new FavoritePost(user, sharePost));
-            }
+        Optional<FavoritePost> favorite = favoritePostRepository.findByUserIdAndPostIdAndPostType(userId, postId, postType);
+
+        if (favorite.isPresent()) {
+            log.info("관심글 삭제 - userId: {}, postId: {}", userId, postId);
+            favoritePostRepository.deleteByUserIdAndPostIdAndPostType(userId, postId, postType);
+            return "등록 취소되었습니다.";
+        } else {
+            FavoritePost newFavorite = new FavoritePost();
+            newFavorite.setUserId(userId);
+            newFavorite.setPostId(postId);
+            newFavorite.setPostType(postType);
+            favoritePostRepository.save(newFavorite);
+            return "등록되었습니다.";
         }
     }
 
-    @Transactional(readOnly = true)
-    public List<FavoritePost> getUserFavorites(Long userId) {
-        return favoritePostRepository.findAllByUserId(userId);
+    public List<FavoritePost> getFavoritePosts(String userId) {
+        return favoritePostRepository.findByUserId(userId);
     }
 }
