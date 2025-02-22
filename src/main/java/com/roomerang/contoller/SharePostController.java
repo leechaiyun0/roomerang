@@ -1,6 +1,5 @@
 package com.roomerang.contoller;
 
-import com.roomerang.entity.Post;
 import com.roomerang.entity.SharePost;
 import com.roomerang.entity.User;
 import com.roomerang.service.SharePostService;
@@ -168,14 +167,15 @@ public class SharePostController {
                               Model model, HttpServletRequest request) {
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<SharePost> postPage=sharePostService.searchPosts(keyword, pageable);
-        User loginUser=getLoginUser(request);
+        Page<SharePost> postPage = sharePostService.searchPosts(keyword, pageable);
+        User loginUser = getLoginUser(request);
 
         model.addAttribute("postPage", postPage);
         model.addAttribute("posts", postPage.getContent());
-        model.addAttribute("currentPage", page);
-        model.addAttribute("totalPages", postPage.getTotalPages());
+        model.addAttribute("keyword", keyword);
         model.addAttribute("loginUser", loginUser);
+        model.addAttribute("page", page);
+        model.addAttribute("size", size);
 
         return "share/sharePostList";
     }

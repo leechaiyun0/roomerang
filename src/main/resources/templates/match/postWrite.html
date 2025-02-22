@@ -138,23 +138,6 @@
         #extraFields {
             display: none;
         }
-
-        .preferences {
-            display: flex;
-            gap: 30px;  /* 각 체크박스 사이 간격 */
-            flex-wrap: nowrap;  /* ✅ 한 줄에 유지하도록 설정 */
-            align-items: center;
-            white-space: nowrap; /* ✅ 줄바꿈 방지 */
-        }
-
-        .preferences label {
-            display: flex;
-            align-items: center;
-            gap: 5px;  /* 체크박스와 텍스트 사이 간격 */
-            font-size: 14px;  /* ✅ 글자 크기 줄이기 */
-            font-weight: bold;
-        }
-
     </style>
 
     <script>
@@ -205,16 +188,6 @@
             <label for="postContent">내용</label>
             <textarea id="postContent" name="postContent"
                       placeholder="생활방식,음주여부,애완동물 여부,흡연 여부 등 사람들에게 알릴 것을 입력해주세요." required></textarea>
-        </div>
-
-        <div class="form-group">
-            <label><strong>작성자 선호조건</strong></label>
-            <div class="preferences">
-                <label><input type="checkbox" name="smoking" value="yes"> 흡연</label>
-                <label><input type="checkbox" name="pets" value="yes"> 반려동물</label>
-                <label><input type="checkbox" name="lifestyle" value="morning"> 아침형 인간</label>
-                <label><input type="checkbox" name="lifestyle" value="night"> 밤형 인간</label>
-            </div>
         </div>
 
         <div class="form-group">
