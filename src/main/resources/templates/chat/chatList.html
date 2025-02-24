@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅 목록</title>
+</head>
+<body>
+<h1>채팅 목록</h1>
+<ul>
+  <th:block th:each="chatRoom : ${chatRooms}">
+    <li>
+      <!-- 채팅방 링크 (각 채팅방의 상세 페이지로 이동) -->
+      <a th:href="@{/chat/room/{roomId}(roomId=${chatRoom.roomId})}">
+        채팅방: <span th:text="${chatRoom.user1Id}"></span> / <span th:text="${chatRoom.user2Id}"></span>
+      </a>
+    </li>
+  </th:block>
+</ul>
+</body>
+</html>

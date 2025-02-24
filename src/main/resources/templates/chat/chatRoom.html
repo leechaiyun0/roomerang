@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>채팅방</title>
+
+</head>
+<body>
+<h1>채팅방</h1>
+
+<!-- ✅ 메시지 목록 (sentAt 추가) -->
+<div id="chatBox">
+  <ul>
+    <th:block th:each="message : ${messages}">
+      <li class="message">
+        <strong th:text="${message.senderId}"></strong>:
+        <span th:text="${message.messageContent}"></span>
+        <span class="time" th:text="${#temporals.format(message.sentAt, 'HH:mm:ss')}"></span>
+      </li>
+    </th:block>
+  </ul>
+</div>
+
+<!-- ✅ 메시지 입력 폼 -->
+<form th:action="@{/chat/send/{roomId}(roomId=${chatRoom.roomId})}" method="post">
+  <textarea name="messageContent" placeholder="메시지를 입력하세요"></textarea>
+  <button type="submit">전송</button>
+</form>
+
+<!-- ✅ 채팅방 삭제 버튼 -->
+<form th:action="@{/chat/delete/{roomId}(roomId=${chatRoom.roomId})}" method="post"
+      onsubmit="return confirm('채팅방을 삭제하시겠습니까?');">
+  <button type="submit">채팅방 삭제</button>
+</form>
+
+<script>
+  function displayMessage(message) {
+    const chatBox = document.getElementById("chatBox");
+
+    // ✅ `sentAt`을 한국 시간(KST)으로 변환
+    const messageTime = new Date(message.sentAt).toLocaleTimeString('ko-KR', {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    // ✅ 메시지를 화면에 추가 (시간 포함)
+    const messageElement = document.createElement("li");
+    messageElement.classList.add("message");
+    messageElement.innerHTML = `<strong>${message.senderId}:</strong> ${message.messageContent} <span class="time">(${messageTime})</span>`;
+
+    chatBox.appendChild(messageElement);
+  }
+</script>
+
+</body>
+</html>
