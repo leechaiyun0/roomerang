@@ -22,11 +22,11 @@ public class ChatRoomService {
     }
 
     // 채팅방 생성
-    public ChatRoom createChatRoom(String user1Id, String user2Id) {
+    public ChatRoom createChatRoom(String user1Id, String user2Id, String type) {
         if (user1Id.equals(user2Id)) {
             throw new IllegalArgumentException("같은 사용자는 채팅을 시작할 수 없습니다.");
         }
-        ChatRoom chatRoom = new ChatRoom(user1Id, user2Id);
+        ChatRoom chatRoom = new ChatRoom(user1Id, user2Id, type);
         return chatRoomRepository.save(chatRoom);
     }
 

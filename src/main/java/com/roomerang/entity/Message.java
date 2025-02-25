@@ -27,13 +27,17 @@ public class Message {
     @Column(nullable = false, length = 500)
     private String messageContent;
 
+    @Column
+    private String imageUrl;
+
     @Column(nullable = false)
     private LocalDateTime sentAt;
 
-    public Message(ChatRoom chatRoom, String senderId, String messageContent, LocalDateTime sentAt) {
+    public Message(ChatRoom chatRoom, String senderId, String messageContent, String imageUrl, LocalDateTime sentAt) {
         this.chatRoom = chatRoom;
         this.senderId = senderId;
         this.messageContent = messageContent;
+        this.imageUrl = imageUrl;
         this.sentAt = sentAt;
     }
 
