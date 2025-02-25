@@ -4,36 +4,193 @@
   <meta charset="UTF-8">
   <title>채팅방</title>
 
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    #chatBox {
+      width: 100%;
+      max-width: 500px;
+      height: 500px;
+      border: 1px solid #ddd;
+      border-radius: 12px;
+      padding: 15px;
+      overflow-y: auto;
+      background-color: #f9f9fa;
+      margin-bottom: 10px;
+    }
+
+    #chatBox ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      padding: 0;
+      margin: 0;
+    }
+
+    .message {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      max-width: 70%;
+    }
+
+    .message.me {
+      align-self: flex-end;
+      align-items: flex-end;
+      text-align: right;
+      margin-right: 15px;
+    }
+
+    .message.other {
+      align-self: flex-start;
+      align-items: flex-start;
+      text-align: left;
+      margin-left: 15px;
+    }
+
+    .message strong {
+      font-size: 0.8em;
+      color: #555;
+      margin-bottom: 4px;
+    }
+
+    .message .content {
+      padding: 10px;
+      border-radius: 12px;
+      font-size: 0.9em;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+    }
+
+    .message.me .content {
+      background-color: #E1FFC7;
+    }
+
+    .message.other .content {
+      background-color: #FFFFFF;
+    }
+
+    .message .time {
+      font-size: 0.75em;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .btn-container {
+      display: flex;
+      gap: 10px;
+      max-width: 500px;
+      width: 100%;
+      position: relative;
+      align-items: center;
+    }
+
+    .btn-container .toggle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background-color: #ddd;
+      font-size: 20px;
+      cursor: pointer;
+    }
+
+    .dropdown-content {
+      position: absolute;
+      top: 50px;
+      left: 0;
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 5px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .remove {
+      background-color: transparent;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .input-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .input-area textarea {
+      flex: 1;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 15px;
+      resize: none;
+      font-size: 14px;
+      height: 20px;
+    }
+
+    .btn.send {
+      padding: 0 15px;
+      border: none;
+      border-radius: 10px;
+      background-color: #505D96;
+      color: white;
+      height: 50px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+  </style>
 </head>
 <body>
 <h1>채팅방</h1>
 
-<!-- ✅ 메시지 목록 (sentAt 추가) -->
 <div id="chatBox">
   <ul>
     <th:block th:each="message : ${messages}">
-      <li class="message">
-        <strong th:text="${message.senderId}"></strong>:
-        <span th:text="${message.messageContent}"></span>
+      <li class="message" th:classappend="${(message.senderId == session.userId) ? 'me' : 'other'}">
+      <strong th:text="${message.senderId}"></strong>
+        <span class="content" th:text="${message.messageContent}"></span>
         <span class="time" th:text="${#temporals.format(message.sentAt, 'HH:mm:ss')}"></span>
       </li>
     </th:block>
   </ul>
 </div>
 
-<!-- ✅ 메시지 입력 폼 -->
-<form th:action="@{/chat/send/{roomId}(roomId=${chatRoom.roomId})}" method="post">
-  <textarea name="messageContent" placeholder="메시지를 입력하세요"></textarea>
-  <button type="submit">전송</button>
-</form>
+<div class="btn-container">
+  <button onclick="toggleRemoveBtn()" class="toggle-btn">+</button>
+  <form id="deleteForm" class="hidden dropdown-content"
+        th:action="@{/chat/delete/{roomId}(roomId=${chatRoom.roomId})}" method="post"
+        onsubmit="return confirm('채팅방을 삭제하시겠습니까?');">
+    <button type="submit" class="remove">채팅방 삭제</button>
+  </form>
 
-<!-- ✅ 채팅방 삭제 버튼 -->
-<form th:action="@{/chat/delete/{roomId}(roomId=${chatRoom.roomId})}" method="post"
-      onsubmit="return confirm('채팅방을 삭제하시겠습니까?');">
-  <button type="submit">채팅방 삭제</button>
-</form>
+  <form class="input-area" th:action="@{/chat/send/{roomId}(roomId=${chatRoom.roomId})}" method="post">
+    <textarea name="messageContent" placeholder="메시지를 입력하세요"></textarea>
+    <button type="submit" class="btn send">전송</button>
+  </form>
+</div>
 
 <script>
+  function toggleRemoveBtn() {
+    document.getElementById('deleteForm').classList.toggle('hidden');
+  }
   function displayMessage(message) {
     const chatBox = document.getElementById("chatBox");
 
