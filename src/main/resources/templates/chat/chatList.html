@@ -113,7 +113,6 @@
       <a th:href="@{/chat/room/{roomId}(roomId=${chatRoom.roomId})}">
         <div class="chat-info">
           <span class="chat-participants">
-          <span th:text="${chatRoom.type == 'matching' ? '[매칭해방]' : '[나눔해방]'}"></span>
             <span th:text="${chatRoom.user1Id}"></span>
             /
             <span th:text="${chatRoom.user2Id}"></span>

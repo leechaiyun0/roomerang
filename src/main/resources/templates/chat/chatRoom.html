@@ -161,51 +161,47 @@
 <body>
 <h1>채팅방</h1>
 
-<h1 th:text="${chatRoom.type == 'matching' ? '매칭해방 채팅방' : '나눔해방 채팅방'}"></h1>
-
 <div id="chatBox">
   <ul>
     <th:block th:each="message : ${messages}">
-      <li class="message">
-        <strong th:text="${message.senderId}"></strong>:
-        <span th:text="${message.messageContent}"></span>
+      <li class="message" th:classappend="${(message.senderId == session.userId) ? 'me' : 'other'}">
+      <strong th:text="${message.senderId}"></strong>
+        <span class="content" th:text="${message.messageContent}"></span>
         <span class="time" th:text="${#temporals.format(message.sentAt, 'HH:mm:ss')}"></span>
-        <div th:if="${message.imageUrl}">
-          <img th:src="@{${message.imageUrl}}" alt="첨부된 이미지" style="max-width: 200px; border-radius: 5px;">
-        </div>
       </li>
     </th:block>
   </ul>
 </div>
 
-<!-- 메시지 입력 폼 -->
-<form th:action="@{/chat/send/{roomId}(roomId=${chatRoom.roomId})}"
-      method="post"
-      enctype="multipart/form-data">
-  <textarea name="messageContent" placeholder="메시지를 입력하세요"></textarea>
-  <input type="file" name="imageFile" accept="image/*">
-  <button type="submit">전송</button>
-</form>
+<div class="btn-container">
+  <button onclick="toggleRemoveBtn()" class="toggle-btn">+</button>
+  <form id="deleteForm" class="hidden dropdown-content"
+        th:action="@{/chat/delete/{roomId}(roomId=${chatRoom.roomId})}" method="post"
+        onsubmit="return confirm('채팅방을 삭제하시겠습니까?');">
+    <button type="submit" class="remove">채팅방 삭제</button>
+  </form>
 
-
-<!-- 채팅방 삭제 버튼 -->
-<form th:action="@{/chat/delete/{roomId}(roomId=${chatRoom.roomId})}" method="post"
-      onsubmit="return confirm('채팅방을 삭제하시겠습니까?');">
-  <button type="submit">채팅방 삭제</button>
-</form>
+  <form class="input-area" th:action="@{/chat/send/{roomId}(roomId=${chatRoom.roomId})}" method="post">
+    <textarea name="messageContent" placeholder="메시지를 입력하세요"></textarea>
+    <button type="submit" class="btn send">전송</button>
+  </form>
+</div>
 
 <script>
+  function toggleRemoveBtn() {
+    document.getElementById('deleteForm').classList.toggle('hidden');
+  }
   function displayMessage(message) {
     const chatBox = document.getElementById("chatBox");
 
-    //sentAt을 한국 시간(KST)으로 변환
+    // ✅ `sentAt`을 한국 시간(KST)으로 변환
     const messageTime = new Date(message.sentAt).toLocaleTimeString('ko-KR', {
       hour: '2-digit',
       minute: '2-digit',
       second: '2-digit'
     });
 
-    //메시지를 화면에 추가 (시간 포함)
+    // ✅ 메시지를 화면에 추가 (시간 포함)
     const messageElement = document.createElement("li");
     messageElement.classList.add("message");
     messageElement.innerHTML = `<strong>${message.senderId}:</strong> ${message.messageContent} <span class="time">(${messageTime})</span>`;
